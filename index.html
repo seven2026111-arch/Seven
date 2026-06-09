@@ -2,992 +2,1154 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>电商客服团队周报看板</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电商客服月报 · 2026年5月</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root{
-  --bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--lt:#f8fafc;
-  --b1:#2563eb;--b2:#7c3aed;--up:#059669;--dn:#dc2626;--warn:#d97706;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
-  background:var(--bg);color:var(--text);font-size:13px;line-height:1.55;}
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f2f0ec;
+    --border: #e4e1da;
+    --border2: #ccc9c1;
+    --text: #1a1916;
+    --text2: #5a5852;
+    --text3: #8c8880;
+    --blue: #2563c9;
+    --blue-l: #dce8fb;
+    --purple: #6340c4;
+    --purple-l: #ede9fb;
+    --teal: #117a5a;
+    --teal-l: #d4f0e7;
+    --amber: #b45309;
+    --amber-l: #fef3c7;
+    --red: #b91c1c;
+    --red-l: #fee2e2;
+    --green: #15803d;
+    --green-l: #dcfce7;
+    --accent: #2563c9;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
 
-.hdr{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 45%,#4338ca 80%,#7c3aed 100%);
-  color:#fff;padding:22px 36px 18px;}
-.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
-.hdr h1{font-size:20px;font-weight:800;letter-spacing:.3px;}
-.hdr p{font-size:11px;opacity:.7;margin-top:4px;}
-.hdr-stats{display:flex;gap:20px;flex-shrink:0;}
-.hstat{text-align:center;}
-.hstat-v{font-size:22px;font-weight:800;line-height:1.1;}
-.hstat-l{font-size:10px;opacity:.65;margin-top:2px;}
-.hdr-tags{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;}
-.htag{font-size:10px;padding:2px 10px;border-radius:20px;
-  border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);}
-.htag.fire{background:rgba(239,68,68,.3);border-color:rgba(252,165,165,.4);}
-.htag.go{background:rgba(16,185,129,.25);border-color:rgba(110,231,183,.35);}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.nav{background:#fff;border-bottom:1px solid var(--border);
-  display:flex;padding:0 36px;position:sticky;top:0;z-index:200;
-  box-shadow:0 2px 6px rgba(0,0,0,.07);overflow-x:auto;}
-.nav::-webkit-scrollbar{height:3px;}
-.ntab{padding:13px 16px;cursor:pointer;font-size:12px;font-weight:500;
-  color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
-.ntab:hover{color:var(--b1);}
-.ntab.on{color:var(--b1);border-bottom-color:var(--b1);font-weight:700;}
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
 
-.pg{display:none;padding:22px 36px 40px;}
-.pg.on{display:block;}
+  /* ── Layout ── */
+  .layout { display: flex; flex-direction: column; min-height: 100vh; }
 
-.st{font-size:14px;font-weight:700;margin:22px 0 14px;padding-bottom:8px;
-  border-bottom:2.5px solid var(--b1);display:flex;align-items:center;gap:8px;}
-.st:first-child{margin-top:0;}
-.st small{font-size:10px;font-weight:400;color:var(--muted);margin-left:6px;}
+  /* ── Top navbar ── */
+  .topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 0;
+  }
+  .topnav-logo {
+    display: flex; flex-direction: column; justify-content: center;
+    padding-right: 1.5rem;
+    border-right: 1px solid var(--border);
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  .topnav-logo .brand { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: .02em; white-space: nowrap; }
+  .topnav-logo .period { font-size: 10px; color: var(--text3); margin-top: 1px; }
 
-/* KPI */
-.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
-.kcard{background:#fff;border-radius:12px;padding:15px 17px;
-  border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.kcard:hover{box-shadow:0 3px 12px rgba(0,0,0,.1);}
-.kl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
-.kv{font-size:22px;font-weight:800;margin:4px 0 2px;color:var(--b1);}
-.kv.g{color:var(--up);} .kv.o{color:var(--warn);} .kv.p{color:var(--b2);}
-.kchg{font-size:11px;} .kchg.up{color:var(--up);} .kchg.dn{color:var(--dn);} .kchg.ne{color:var(--muted);}
-.ksub{font-size:10px;color:var(--muted);margin-top:2px;}
+  .topnav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
 
-/* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px;}
-.g1{margin-bottom:18px;}
-.cc{background:#fff;border-radius:12px;padding:16px 18px;
-  border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.cc h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;}
-.cv{position:relative;}
-.h160{height:160px;} .h200{height:200px;} .h220{height:220px;}
-.h240{height:240px;} .h260{height:260px;} .h300{height:300px;} .h340{height:340px;}
+  .nav-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: .4rem .9rem;
+    font-size: 13px; color: var(--text2);
+    cursor: pointer; border: none; background: none;
+    border-radius: 6px;
+    transition: background .15s, color .15s;
+    text-decoration: none;
+    white-space: nowrap;
+    height: 36px;
+  }
+  .nav-item:hover { background: var(--bg); color: var(--text); }
+  .nav-item.active { background: var(--blue-l); color: var(--blue); font-weight: 500; }
+  .nav-item .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; flex-shrink: 0; opacity: .5;
+  }
+  .nav-item.active .dot { opacity: 1; }
 
-/* BRAND TAG */
-.btag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
-  padding:2px 8px;border-radius:10px;white-space:nowrap;}
-.btag.lf{background:#dbeafe;color:#1d4ed8;}
-.btag.idn{background:#ede9fe;color:#5b21b6;}
+  .topnav-meta {
+    margin-left: auto; flex-shrink: 0;
+    font-size: 11px; color: var(--text3);
+    padding-left: 1rem;
+    border-left: 1px solid var(--border);
+    white-space: nowrap;
+  }
 
-/* STORE ROW TAG */
-.stag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;}
-.stag.lf{color:#1d4ed8;} .stag.idn{color:#5b21b6;}
-.stag::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;}
-.stag.lf::before{background:#2563eb;} .stag.idn::before{background:#7c3aed;}
+  /* hide old sidebar elements */
+  .sidebar-footer, .nav-section-label { display: none; }
 
-/* LEGEND */
-.lgd{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
-.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);}
-.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.ls{width:14px;height:3px;flex-shrink:0;border-radius:2px;}
+  .main { flex: 1; overflow-x: hidden; }
 
-/* TABLE */
-.tbl{width:100%;border-collapse:collapse;font-size:12px;}
-.tbl th{background:var(--lt);padding:8px 10px;text-align:left;font-weight:600;
-  color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
-.tbl td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
-.tbl tr:last-child td{border-bottom:none;}
-.tbl tr:hover td{background:#fafcff;}
-.tbl .sec{background:#f8f7ff;border-top:1.5px solid #ddd6fe;}
-.r{text-align:right;font-weight:500;}
-.up{color:var(--up);font-weight:600;} .dn{color:var(--dn);font-weight:600;} .ne{color:var(--muted);}
+  /* ── Header ── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.75rem 2.5rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .header-title { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .header-sub { font-size: 13px; color: var(--text3); margin-top: 4px; }
+  .activity-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--amber-l); color: var(--amber);
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid #fcd34d;
+  }
+  .activity-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-/* PERIOD PILL */
-.pp{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
-.pp1{background:#f1f5f9;color:#475569;} .pp2{background:#dbeafe;color:#1d4ed8;}
-.pp3{background:#fef3c7;color:#92400e;} .pp4{background:#dcfce7;color:#166534;}
+  /* ── Sections ── */
+  .section { padding: 2rem 2.5rem; border-bottom: 1px solid var(--border); max-width: 1100px; margin: 0 auto; }
+  .section:last-child { border-bottom: none; }
 
-/* RANK BADGE */
-.rb{display:inline-flex;align-items:center;justify-content:center;
-  width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;}
-.rb1{background:#fef3c7;color:#78350f;} .rb2{background:#e2e8f0;color:#334155;}
-.rb3{background:#fed7aa;color:#7c2d12;} .rb4{background:#f1f5f9;color:#64748b;}
-.rb5{background:#f1f5f9;color:#94a3b8;} .rb6{background:#f8fafc;color:#cbd5e1;}
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .section-title {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-icon {
+    width: 26px; height: 26px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--blue-l); font-size: 13px;
+  }
+  .section-tag {
+    font-size: 11px; color: var(--text3); background: var(--surface2);
+    padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border);
+  }
 
-/* STAFF CARDS */
-.sgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px;}
-.sc{background:#fff;border-radius:12px;padding:13px;border:1px solid var(--border);
-  border-top-width:4px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:transform .15s,box-shadow .15s;}
-.sc:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.1);}
-.sav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:#fff;margin-bottom:8px;}
-.sn{font-size:13px;font-weight:700;} .sr{font-size:10px;color:var(--muted);margin-bottom:6px;height:15px;}
-.ss{display:flex;justify-content:space-between;font-size:11px;padding:2.5px 0;border-bottom:1px dashed var(--border);}
-.ss:last-child{border-bottom:none;} .sv{font-weight:600;}
+  /* ── KPI Cards ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
 
-/* INSIGHT */
-.ins{border-radius:10px;padding:11px 15px;margin-bottom:10px;border-left:4px solid var(--b1);
-  font-size:12px;line-height:1.7;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05);}
-.ins.o{border-color:var(--warn);} .ins.g{border-color:var(--up);}
-.ins.r{border-color:var(--dn);} .ins.p{border-color:var(--b2);}
-.ins strong{color:var(--text);}
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--accent);
+  }
+  .kpi-card.purple::before { background: var(--purple); }
+  .kpi-card.teal::before { background: var(--teal); }
+  .kpi-card.amber::before { background: var(--amber); }
 
-/* ACT BANNER */
-.abanner{background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde68a;
-  border-radius:12px;padding:13px 16px;margin-bottom:18px;display:flex;gap:10px;font-size:12px;}
-.abanner .ai{font-size:18px;flex-shrink:0;}
-.atags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
-.at{font-size:10px;padding:2px 9px;border-radius:10px;background:rgba(255,255,255,.7);
-  border:1px solid rgba(245,158,11,.35);color:#92400e;font-weight:600;}
-.at.on{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:#991b1b;}
+  .kpi-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: .02em; }
+  .kpi-val { font-size: 26px; font-weight: 700; color: var(--text); margin: 4px 0 6px; letter-spacing: -.02em; line-height: 1; }
+  .kpi-val small { font-size: 14px; font-weight: 500; }
+  .kpi-chg { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .up { color: var(--green); }
+  .dn { color: var(--red); }
+  .neu { color: var(--text3); }
+  .kpi-base { font-size: 11px; color: var(--text3); margin-left: 4px; }
 
-.fn{font-size:10px;color:var(--muted);margin-top:7px;padding:6px 11px;
-  background:var(--lt);border-radius:6px;border:1px solid var(--border);}
+  /* ── Brand Cards ── */
+  .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+  .brand-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .brand-card-header {
+    padding: .85rem 1.1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-card-header h3 { font-size: 13px; font-weight: 600; }
+  .brand-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px;
+    border: 1px solid; font-weight: 500;
+  }
+  .brand-tag.fuel { color: var(--blue); border-color: #93c5fd; background: var(--blue-l); }
+  .brand-tag.idn { color: var(--purple); border-color: #c4b5fd; background: var(--purple-l); }
+  .brand-metrics { padding: .5rem 0; }
+  .brand-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .45rem 1.1rem;
+    font-size: 12.5px;
+  }
+  .brand-row:hover { background: var(--bg); }
+  .brand-row .lbl { color: var(--text3); }
+  .brand-row .val { font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .brand-row .chg { font-size: 11px; }
 
-/* MINI BAR */
-.mbar-w{margin-top:8px;}
-.mbar-l{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:2px;}
-.mbar{height:4px;background:var(--border);border-radius:3px;overflow:hidden;}
-.mbar-f{height:100%;border-radius:3px;}
+  /* ── Store Table ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left; padding: .6rem .9rem;
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    letter-spacing: .04em; text-transform: uppercase;
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+  .data-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .data-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .data-table td {
+    padding: .65rem .9rem; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--bg); }
+  .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .data-table .bold { font-weight: 600; }
 
-/* section divider in table */
-.tdiv{border-top:2px solid var(--border) !important;}
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
 
-@media(max-width:1100px){
-  .krow{grid-template-columns:repeat(3,1fr);}
-  .sgrid{grid-template-columns:repeat(3,1fr);}
-  .g3{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:750px){
-  .krow{grid-template-columns:repeat(2,1fr);}
-  .g2,.g3{grid-template-columns:1fr;}
-  .sgrid{grid-template-columns:repeat(2,1fr);}
-}
+  /* ── Brand Pill ── */
+  .brand-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; padding: 2px 7px; border-radius: 10px;
+    font-weight: 500; white-space: nowrap;
+  }
+  .brand-pill.fuel { background: var(--blue-l); color: var(--blue); }
+  .brand-pill.idn { background: var(--purple-l); color: var(--purple); }
+
+  /* ── Change badges ── */
+  .chg-badge {
+    font-size: 11px; padding: 1px 6px; border-radius: 10px; font-weight: 500;
+  }
+  .chg-badge.up { background: var(--green-l); color: var(--green); }
+  .chg-badge.dn { background: var(--red-l); color: var(--red); }
+  .chg-badge.neu { background: var(--surface2); color: var(--text3); }
+
+  /* ── Progress bars ── */
+  .bar-bg { background: var(--surface2); border-radius: 3px; height: 6px; margin-top: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+
+  /* ── Agent cards ── */
+  .agent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .agent-head {
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .agent-name { font-size: 13px; font-weight: 600; }
+  .agent-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .agent-metrics { padding: .5rem 1rem .75rem; }
+  .agent-metric-row {
+    display: flex; justify-content: space-between;
+    padding: .3rem 0; font-size: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .agent-metric-row:last-child { border-bottom: none; }
+  .agent-metric-row .ml { color: var(--text3); }
+  .agent-metric-row .mv { font-weight: 600; }
+  .rank-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-size: 10px; font-weight: 700; margin-left: 4px;
+  }
+  .rd1 { background: #fbbf24; color: #431407; }
+  .rd2 { background: #9ca3af; color: #111827; }
+  .rd3 { background: #fb923c; color: #431407; }
+  .rdn { background: var(--surface2); color: var(--text3); }
+
+  /* ── Insight boxes ── */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .insight {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: .75rem 1rem;
+    font-size: 12.5px; line-height: 1.6;
+  }
+  .insight.warn { border-left-color: var(--amber); }
+  .insight.good { border-left-color: var(--teal); }
+  .insight.alert { border-left-color: var(--red); }
+  .insight b { font-weight: 600; color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* ── Tips ── */
+  .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.1rem 1.25rem;
+  }
+  .tip-num { font-size: 28px; font-weight: 800; color: var(--blue); letter-spacing: -.02em; margin-bottom: .5rem; opacity: .8; }
+  .tip-title { font-size: 13px; font-weight: 600; margin-bottom: .4rem; }
+  .tip-text { font-size: 12.5px; color: var(--text2); line-height: 1.65; }
+
+  /* ── Chart containers ── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .chart-title { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: .85rem; }
+  .chart-wrap { position: relative; width: 100%; }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: .75rem; font-size: 11px; color: var(--text3); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Ranking table ── */
+  .rank-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .rank-table th {
+    text-align: center; padding: .5rem .7rem;
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    letter-spacing: .03em; background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-table th:first-child { text-align: left; }
+  .rank-table td { padding: .6rem .7rem; border-bottom: 1px solid var(--border); text-align: center; }
+  .rank-table td:first-child { text-align: left; font-weight: 600; }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table tr:hover td { background: var(--bg); }
+
+  /* ── Scatter labels ── */
+  .scatter-labels { position: relative; }
+
+  /* ── Note ── */
+  .note { font-size: 11px; color: var(--text3); margin-top: .6rem; line-height: 1.5; }
+  .note::before { content: '※ '; }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+  /* ── Two-col layout ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── Scrollspy ── */
+  :target { scroll-margin-top: 20px; }
+
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .brand-grid, .two-col, .agent-grid, .tips-grid { grid-template-columns: 1fr; }
+    .section { padding: 1.5rem 1rem; }
+    .page-header { padding: 1.25rem 1rem; flex-direction: column; gap: .75rem; align-items: flex-start; }
+    .insight-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
+<div class="layout">
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-top">
+<!-- ── Top navbar ── -->
+<nav class="topnav">
+  <div class="topnav-logo">
+    <div class="brand">电商客服月报</div>
+    <div class="period">2026年4–5月数据</div>
+  </div>
+  <div class="topnav-links">
+    <a class="nav-item active" href="#overview"><span class="dot"></span>总体概览</a>
+    <a class="nav-item" href="#brand"><span class="dot"></span>品牌分析</a>
+    <a class="nav-item" href="#store"><span class="dot"></span>店铺维度</a>
+    <a class="nav-item" href="#agent"><span class="dot"></span>客服表现</a>
+    <a class="nav-item" href="#ranking"><span class="dot"></span>综合排名</a>
+    <a class="nav-item" href="#conclusion"><span class="dot"></span>结论与建议</a>
+  </div>
+  <div class="topnav-meta">理想燃料 &amp; IDN · 6名客服 · 截至 2026.05.31</div>
+</nav>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Header -->
+  <div class="page-header">
     <div>
-      <h1>📊 电商客服团队周报看板</h1>
-      <p>数据范围：2026.05.02 — 2026.05.29 · 四周期 · 理想燃料 & IDN 双品牌 · 全渠道 · 8个品牌×店铺维度</p>
+      <div class="header-title">电商客服月报</div>
+      <div class="header-sub">2026年5月 · 理想燃料 &amp; IDN理想营养 · 全平台汇总</div>
     </div>
-    <div class="hdr-stats">
-      <div class="hstat"><div class="hstat-v">8,111</div><div class="hstat-l">月度总接待</div></div>
-      <div class="hstat"><div class="hstat-v">¥53.3万</div><div class="hstat-l">月度总销售</div></div>
-      <div class="hstat"><div class="hstat-v">95.7%</div><div class="hstat-l">综合满意度</div></div>
-      <div class="hstat"><div class="hstat-v">¥65.7</div><div class="hstat-l">月均人效</div></div>
-    </div>
-  </div>
-  <div class="hdr-tags">
-    <span class="htag fire">5月13日起 全平台大促 🔥</span>
-    <span class="htag" style="background:rgba(37,99,235,.3);border-color:rgba(147,197,253,.5);">
-      <span style="color:#93c5fd;">■</span> 理想燃料：天猫/抖音/小红书/拼多多/京东POP</span>
-    <span class="htag" style="background:rgba(124,58,237,.3);border-color:rgba(196,181,253,.5);">
-      <span style="color:#c4b5fd;">■</span> IDN：天猫/抖音/小红书</span>
-    <span class="htag go">转化率维度新增 ✨</span>
-    <span class="htag">6名客服含新人花花</span>
-  </div>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-  <div class="ntab on" onclick="gp('ov',this)">🏠 总体概览</div>
-  <div class="ntab" onclick="gp('stores',this)">🏪 品牌·店铺分析</div>
-  <div class="ntab" onclick="gp('cvr',this)">📈 转化率分析</div>
-  <div class="ntab" onclick="gp('staff',this)">👤 客服表现</div>
-  <div class="ntab" onclick="gp('w3',this)">🔍 周期3诊断</div>
-  <div class="ntab" onclick="gp('end',this)">📝 结论建议</div>
-</div>
-
-<!-- ===== 总体概览 ===== -->
-<div class="pg on" id="pg-ov">
-  <div class="abanner">
-    <div class="ai">⚡</div>
     <div>
-      <strong style="color:#78350f;">活动周期 & 品牌店铺说明</strong>
-      <div class="atags">
-        <span class="at">周期1 (05.02–08)：活动前基准期</span>
-        <span class="at on">周期2 (05.09–15)：5月13日大促启动</span>
-        <span class="at on">周期3 (05.16–22)：大促持续期</span>
-        <span class="at on">周期4 (05.23–29)：活动后期(6/21截止)</span>
-        <span class="at" style="background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.3);color:#1d4ed8;">理想燃料·天猫 / 抖音 / 小红书 / 拼多多 / 京东POP</span>
-        <span class="at" style="background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3);color:#5b21b6;">IDN·天猫 / 抖音 / 小红书</span>
-        <span class="at">花花：周期1–2无接待，周期3起上线</span>
+      <div class="activity-badge">
+        <span class="activity-dot"></span>
+        5月13日大促进行中
       </div>
     </div>
   </div>
 
-  <div class="st">📈 四周核心指标总览</div>
-  <div class="krow">
-    <div class="kcard"><div class="kl">月度总接待量</div><div class="kv">8,111</div>
-      <div class="ksub">周1:1,645 → 周2:2,578 → 周3:2,724 → 周4:2,164</div>
-      <div class="kchg up">↑ 周期2起大促驱动</div></div>
-    <div class="kcard"><div class="kl">月度总销售额</div><div class="kv g">¥533,237</div>
-      <div class="ksub">周期2峰值¥204,852 / 周期4逐步回落</div>
-      <div class="kchg up">↑ 大促带动倍增</div></div>
-    <div class="kcard"><div class="kl">整体月均人效</div><div class="kv o">¥65.7</div>
-      <div class="ksub">周1:¥31.1 → 周2:¥79.5（峰值）</div>
-      <div class="kchg ne">→ 活动中后期规律回落</div></div>
-    <div class="kcard"><div class="kl">综合满意度均值</div><div class="kv p">95.7%</div>
-      <div class="ksub">周3最低93.8% / 周1最高97.5%</div>
-      <div class="kchg ne">→ 活动期小幅波动，基线稳健</div></div>
-    <div class="kcard"><div class="kl">理想燃料·天猫转化率峰值</div><div class="kv" style="color:#2563eb;">59.1%</div>
-      <div class="ksub">IDN·天猫峰值27.6%（周期2）</div>
-      <div class="kchg up">↑ 大促显著拉升转化</div></div>
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <h3>四周接待量 vs 销售额走势（全渠道合计）</h3>
-      <div class="lgd">
-        <div class="li"><div class="ls" style="background:#3b82f6"></div>接待量</div>
-        <div class="li"><div class="ls" style="background:#f59e0b"></div>销售额(¥)</div>
+  <!-- ═══════════════════════════════════════ 1. 总体概览 -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon">📊</div>
+        总体概览
       </div>
-      <div class="cv h260"><canvas id="c_ov_trend"></canvas></div>
-      <div class="fn">🔴 周期3拐点：接待量+5.7% 但销售额-19.1%——咨询结构转变（详见周期3诊断）</div>
+      <span class="section-tag">4月 vs 5月</span>
     </div>
-    <div class="cc">
-      <h3>四周整体人效走势（¥/接待）</h3>
-      <div class="cv h260"><canvas id="c_ov_eff"></canvas></div>
-      <div class="fn">人效直接反映客服接待的销售转化效率。周期2活动启动期人效峰值¥79.5，周期3起回落为活动中期正常规律。</div>
-    </div>
-  </div>
 
-  <div class="g3">
-    <div class="cc"><h3>四周满意度走势</h3><div class="cv h180"><canvas id="c_ov_sat"></canvas></div></div>
-    <div class="cc"><h3>四周平均响应时间(秒)</h3><div class="cv h180"><canvas id="c_ov_resp"></canvas></div></div>
-    <div class="cc"><h3>两品牌月度销售额占比</h3><div class="cv h180"><canvas id="c_ov_pie"></canvas></div></div>
-  </div>
-
-  <div class="st">📋 四周关键指标汇总</div>
-  <div class="cc">
-    <table class="tbl">
-      <thead><tr><th>周期</th><th>阶段</th>
-        <th class="r">接待量</th><th class="r">环比</th>
-        <th class="r">销售额</th><th class="r">环比</th>
-        <th class="r">人效(¥)</th><th class="r">首响(s)</th>
-        <th class="r">平响(s)</th><th class="r">满意度</th></tr></thead>
-      <tbody>
-        <tr><td><span class="pp pp1">周期1</span> 05.02–08</td><td>活动前基准</td>
-          <td class="r">1,645</td><td class="r ne">—</td><td class="r">¥51,193</td><td class="r ne">—</td>
-          <td class="r">31.1</td><td class="r">11.1</td><td class="r">16.2</td><td class="r">97.5%</td></tr>
-        <tr style="background:#eff6ff;"><td><span class="pp pp2">周期2</span> 05.09–15</td><td>🔥 大促启动</td>
-          <td class="r">2,578</td><td class="r up">+56.7%</td><td class="r">¥204,852</td><td class="r up">+300%</td>
-          <td class="r">79.5</td><td class="r">12.6</td><td class="r">17.9</td><td class="r">94.2%</td></tr>
-        <tr style="background:#fffbeb;"><td><span class="pp pp3">周期3</span> 05.16–22</td><td>活动持续</td>
-          <td class="r up">2,724</td><td class="r up">+5.7%</td><td class="r dn">¥165,665</td><td class="r dn">-19.1%</td>
-          <td class="r">60.8</td><td class="r">12.5</td><td class="r">16.8</td><td class="r">93.8%</td></tr>
-        <tr style="background:#f0fdf4;"><td><span class="pp pp4">周期4</span> 05.23–29</td><td>活动后期</td>
-          <td class="r dn">2,164</td><td class="r dn">-20.5%</td><td class="r dn">¥111,527</td><td class="r dn">-32.7%</td>
-          <td class="r">51.5</td><td class="r">11.1</td><td class="r">16.0</td><td class="r">97.4%</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ===== 品牌·店铺分析 ===== -->
-<div class="pg" id="pg-stores">
-  <div class="st">🏪 品牌·店铺维度分析 <small>所有图表均以"品牌·店铺"为最小颗粒度</small></div>
-
-  <!-- 图例说明 -->
-  <div style="background:#fff;border-radius:10px;padding:12px 16px;margin-bottom:16px;
-    border:1px solid var(--border);display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
-    <span style="font-size:11px;font-weight:600;color:var(--muted);">颜色体系：</span>
-    <div class="li"><div class="ld" style="background:#1d4ed8"></div><span style="font-size:11px;color:#1d4ed8;font-weight:600;">理想燃料·天猫</span></div>
-    <div class="li"><div class="ld" style="background:#3b82f6"></div><span style="font-size:11px;color:#3b82f6;font-weight:600;">理想燃料·抖音</span></div>
-    <div class="li"><div class="ld" style="background:#60a5fa"></div><span style="font-size:11px;color:#60a5fa;font-weight:600;">理想燃料·小红书</span></div>
-    <div class="li"><div class="ld" style="background:#93c5fd"></div><span style="font-size:11px;color:#2563eb;font-weight:600;">理想燃料·拼多多</span></div>
-    <div class="li"><div class="ld" style="background:#bfdbfe"></div><span style="font-size:11px;color:#2563eb;font-weight:600;">理想燃料·京东POP</span></div>
-    <div style="width:1px;height:20px;background:var(--border);"></div>
-    <div class="li"><div class="ld" style="background:#6d28d9"></div><span style="font-size:11px;color:#6d28d9;font-weight:600;">IDN·天猫</span></div>
-    <div class="li"><div class="ld" style="background:#8b5cf6"></div><span style="font-size:11px;color:#8b5cf6;font-weight:600;">IDN·抖音</span></div>
-    <div class="li"><div class="ld" style="background:#c4b5fd"></div><span style="font-size:11px;color:#7c3aed;font-weight:600;">IDN·小红书</span></div>
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <h3>各品牌·店铺 四周接待量</h3>
-      <div class="lgd">
-        <div class="li"><div class="ld" style="background:#94a3b8"></div>周期1</div>
-        <div class="li"><div class="ld" style="background:#3b82f6"></div>周期2</div>
-        <div class="li"><div class="ld" style="background:#f59e0b"></div>周期3</div>
-        <div class="li"><div class="ld" style="background:#10b981"></div>周期4</div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">5月总接待量</div>
+        <div class="kpi-val">9,937</div>
+        <div class="kpi-chg up">↑ 15.1% <span class="kpi-base">vs 4月 8,632</span></div>
       </div>
-      <div class="cv h300"><canvas id="c_bs_rec"></canvas></div>
-    </div>
-    <div class="cc">
-      <h3>各品牌·店铺 四周销售额</h3>
-      <div class="lgd">
-        <div class="li"><div class="ld" style="background:#94a3b8"></div>周期1</div>
-        <div class="li"><div class="ld" style="background:#3b82f6"></div>周期2</div>
-        <div class="li"><div class="ld" style="background:#f59e0b"></div>周期3</div>
-        <div class="li"><div class="ld" style="background:#10b981"></div>周期4</div>
+      <div class="kpi-card purple">
+        <div class="kpi-label">5月总销售额</div>
+        <div class="kpi-val"><small>¥</small>583,325</div>
+        <div class="kpi-chg up">↑ 38.2% <span class="kpi-base">vs 4月 ¥422,180</span></div>
       </div>
-      <div class="cv h300"><canvas id="c_bs_sales"></canvas></div>
+      <div class="kpi-card teal">
+        <div class="kpi-label">5月整体人效</div>
+        <div class="kpi-val"><small>¥</small>58.7</div>
+        <div class="kpi-chg up">↑ 20.1% <span class="kpi-base">vs 4月 ¥48.9</span></div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">活动增量销售额</div>
+        <div class="kpi-val"><small>¥</small>161,145</div>
+        <div class="kpi-chg neu">大促贡献估算</div>
+      </div>
     </div>
-  </div>
 
-  <div class="g2">
-    <div class="cc">
-      <h3>各品牌·店铺 月度销售额占比</h3>
-      <div class="cv h260"><canvas id="c_bs_pie"></canvas></div>
+    <div class="chart-card">
+      <div class="chart-title">月度趋势：接待量与销售额</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>接待量（左轴）</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#117a5a"></span>销售额（右轴，万元）</div>
+      </div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="c-overview" role="img" aria-label="4月接待8632销售42万，5月接待9937销售58万">月度概览图</canvas>
+      </div>
     </div>
-    <div class="cc">
-      <h3>各品牌·店铺 四周人效趋势(¥/接待)</h3>
-      <div class="cv h260"><canvas id="c_bs_eff"></canvas></div>
-      <div class="fn">IDN·抖音周期2人效¥119.7为全渠道峰值，远超其他店铺，活动爆发力最强。理想燃料·天猫人效周期2达¥82，是理想燃料品牌最高。</div>
-    </div>
-  </div>
 
-  <div class="st">📋 品牌·店铺四周核心指标明细</div>
-  <div class="cc" style="overflow-x:auto;">
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th>品牌</th><th>店铺</th>
-          <th class="r">周1接待</th><th class="r">周2接待</th><th class="r">周3接待</th><th class="r">周4接待</th>
-          <th class="r">周1销售</th><th class="r">周2销售</th><th class="r">周3销售</th><th class="r">周4销售</th>
-          <th class="r">月合计销售</th><th class="r">月均人效</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- 理想燃料 -->
-        <tr><td rowspan="5" style="font-weight:700;color:#1d4ed8;vertical-align:top;padding-top:12px;">
-          <span class="btag lf">■ 理想燃料</span></td>
-          <td><strong>天猫</strong></td>
-          <td class="r">598</td><td class="r">821</td><td class="r">889</td><td class="r">808</td>
-          <td class="r">¥13,455</td><td class="r">¥67,300</td><td class="r">¥66,945</td><td class="r">¥43,758</td>
-          <td class="r"><strong>¥191,458</strong></td><td class="r">61.5</td></tr>
-        <tr><td><strong>抖音</strong></td>
-          <td class="r">205</td><td class="r">382</td><td class="r">535</td><td class="r">394</td>
-          <td class="r">¥7,030</td><td class="r">¥32,019</td><td class="r">¥31,418</td><td class="r">¥16,262</td>
-          <td class="r"><strong>¥86,729</strong></td><td class="r">57.3</td></tr>
-        <tr><td><strong>小红书</strong></td>
-          <td class="r">82</td><td class="r">69</td><td class="r">79</td><td class="r">74</td>
-          <td class="r">¥1,494</td><td class="r">¥4,233</td><td class="r">¥4,088</td><td class="r">¥1,814</td>
-          <td class="r"><strong>¥11,629</strong></td><td class="r">38.3</td></tr>
-        <tr><td><strong>拼多多</strong></td>
-          <td class="r">225</td><td class="r">398</td><td class="r">313</td><td class="r">252</td>
-          <td class="r">¥5,311</td><td class="r">¥18,107</td><td class="r">¥6,302</td><td class="r">¥3,839</td>
-          <td class="r"><strong>¥33,559</strong></td><td class="r">28.3</td></tr>
-        <tr><td><strong>京东POP</strong></td>
-          <td class="r">73</td><td class="r">142</td><td class="r">154</td><td class="r">103</td>
-          <td class="r">¥1,158</td><td class="r">¥8,088</td><td class="r">¥7,047</td><td class="r">¥3,398</td>
-          <td class="r"><strong>¥19,691</strong></td><td class="r">41.7</td></tr>
-        <!-- IDN -->
-        <tr class="tdiv"><td rowspan="3" style="font-weight:700;color:#5b21b6;vertical-align:top;padding-top:12px;">
-          <span class="btag idn">■ IDN</span></td>
-          <td><strong>天猫</strong></td>
-          <td class="r">159</td><td class="r">278</td><td class="r">292</td><td class="r">250</td>
-          <td class="r">¥3,862</td><td class="r">¥20,721</td><td class="r">¥16,223</td><td class="r">¥21,049</td>
-          <td class="r"><strong>¥61,855</strong></td><td class="r">63.1</td></tr>
-        <tr><td><strong>抖音</strong></td>
-          <td class="r">179</td><td class="r">354</td><td class="r">276</td><td class="r">151</td>
-          <td class="r">¥11,479</td><td class="r">¥42,359</td><td class="r">¥22,164</td><td class="r">¥8,974</td>
-          <td class="r"><strong>¥84,976</strong></td><td class="r">88.5</td></tr>
-        <tr><td><strong>小红书</strong></td>
-          <td class="r">124</td><td class="r">134</td><td class="r">186</td><td class="r">132</td>
-          <td class="r">¥7,404</td><td class="r">¥12,024</td><td class="r">¥11,480</td><td class="r">¥12,431</td>
-          <td class="r"><strong>¥43,339</strong></td><td class="r">76.0</td></tr>
-      </tbody>
-    </table>
-    <div class="fn">
-      🏆 月度销售额 TOP3：①理想燃料·天猫 ¥191,458（35.9%）  ②IDN·抖音 ¥84,976（15.9%）  ③理想燃料·抖音 ¥86,729（16.3%）<br>
-      ⚠️ 理想燃料·拼多多周期3销售额-65.2%（¥18,107→¥6,302），且接待量同步减少，疑为平台活动退出，建议运营侧确认。
+    <div class="insight-grid">
+      <div class="insight">
+        <b>活动驱动显著</b>
+        5月13日起全平台大促上线，销售额增幅（+38.2%）远超接待量增幅（+15.1%），说明大促期间客单价提升明显，客服有效承接了高价值转化。
+      </div>
+      <div class="insight good">
+        <b>人效跨越提升</b>
+        全团队人效从¥48.9升至¥58.7（+20.1%），在接待量仅小幅增长的情况下实现销售额大幅跳升，体现活动节奏配合下的高效转化。
+      </div>
+      <div class="insight warn">
+        <b>活动背景说明</b>
+        5/8起有赞平台提前进入活动期；5/13全电商平台大促正式启动（延续至6/21）；4月含天猫IDN上新及理想燃料21日套餐上新，奠定促销基础。
+      </div>
+      <div class="insight">
+        <b>团队变化</b>
+        5月新增花花（新人，培训期内陆续上线各平台）；小月已于4月离职。6人团队在活动高峰期完成既定接待目标，整体运营稳定。
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 满意度 -->
-  <div class="st">😊 各品牌·店铺 满意度对比</div>
-  <div class="g2">
-    <div class="cc">
-      <h3>各品牌·店铺 四周满意度趋势</h3>
-      <div class="cv h260"><canvas id="c_bs_sat"></canvas></div>
-      <div class="fn">IDN·抖音周期3满意度降至66.7%，为全渠道最低值，需重点关注。理想燃料·天猫和理想燃料·京东POP满意度整体稳定。</div>
+  <!-- ═══════════════════════════════════════ 2. 品牌分析 -->
+  <section class="section" id="brand">
+    <div class="section-header">
+      <div class="section-title"><div class="section-icon">🏷</div>品牌环比分析</div>
+      <span class="section-tag">理想燃料 vs IDN</span>
     </div>
-    <div class="cc">
-      <h3>各品牌·店铺 响应时间对比（有数据的店铺）</h3>
-      <div class="cv h260"><canvas id="c_bs_resp"></canvas></div>
-      <div class="fn">响应时间数据主要来自天猫和京东POP（抖音/小红书/拼多多响应时间数据缺失）。</div>
-    </div>
-  </div>
-</div>
 
-<!-- ===== 转化率分析 ===== -->
-<div class="pg" id="pg-cvr">
-  <div class="st">📈 转化率专项分析 <small>按品牌·店铺拆分，不再混用</small></div>
-
-  <div class="ins p" style="margin-bottom:16px;">
-    <strong>🔑 数据说明：</strong>各品牌·店铺转化率均来自原始数据「转化率」字段，按接待量加权平均计算。<br>
-    <strong style="color:#1d4ed8;">理想燃料·天猫</strong>转化率约 44–59%（基数大，最具参考价值）；
-    <strong style="color:#5b21b6;">IDN·天猫</strong>转化率约 22–28%（海外品，决策链路长）；
-    两者不能直接横向比较，需在各自品牌基准线内纵向观察趋势。
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <h3>各品牌·店铺 四周转化率趋势</h3>
-      <div class="cv h280"><canvas id="c_cvr_all"></canvas></div>
-      <div class="fn">颜色与品牌·店铺颜色体系一致（深蓝=理想燃料，紫=IDN）。理想燃料各平台转化率普遍高于IDN同平台，属于品牌差异而非客服表现差异。</div>
-    </div>
-    <div class="cc">
-      <h3>各品牌·店铺 月度转化率对比（柱状）</h3>
-      <div class="cv h280"><canvas id="c_cvr_bar"></canvas></div>
-    </div>
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <h3>理想燃料各平台 转化率四周对比</h3>
-      <div class="cv h240"><canvas id="c_cvr_lf"></canvas></div>
-      <div class="fn">理想燃料·天猫转化率周期2达59.1%为最高；理想燃料·抖音周期3出现逆势上升至53.9%，值得关注。</div>
-    </div>
-    <div class="cc">
-      <h3>IDN各平台 转化率四周对比</h3>
-      <div class="cv h240"><canvas id="c_cvr_idn"></canvas></div>
-      <div class="fn">IDN·抖音转化率周期2达32.9%，为IDN三平台最高；IDN·小红书转化率最低但稳定，适合长期培育。</div>
-    </div>
-  </div>
-
-  <div class="st">👤 各客服在不同品牌·店铺的转化率</div>
-  <div class="cc" style="overflow-x:auto;">
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th>客服</th>
-          <th class="r"><span style="color:#1d4ed8;">理想燃料</span><br>天猫</th>
-          <th class="r"><span style="color:#3b82f6;">理想燃料</span><br>抖音</th>
-          <th class="r"><span style="color:#60a5fa;">理想燃料</span><br>小红书</th>
-          <th class="r"><span style="color:#2563eb;">理想燃料</span><br>拼多多</th>
-          <th class="r"><span style="color:#2563eb;">理想燃料</span><br>京东POP</th>
-          <th class="r"><span style="color:#6d28d9;">IDN</span><br>天猫</th>
-          <th class="r"><span style="color:#8b5cf6;">IDN</span><br>抖音</th>
-          <th class="r"><span style="color:#7c3aed;">IDN</span><br>小红书</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>小柒</td>
-          <td class="r">54.1%</td><td class="r">52.3%</td><td class="r">36.3%</td>
-          <td class="r">41.5%</td><td class="r">36.1%</td>
-          <td class="r">24.8%</td><td class="r">33.1%</td><td class="r">20.1%</td></tr>
-        <tr><td>蛋宝儿</td>
-          <td class="r" style="color:#dc2626;font-weight:700;">56.6%</td><td class="r">46.6%</td><td class="r">33.6%</td>
-          <td class="r">35.0%</td><td class="r">38.3%</td>
-          <td class="r" style="color:#dc2626;font-weight:700;">35.5%</td><td class="r">32.0%</td><td class="r">15.2%</td></tr>
-        <tr><td>晚晚</td>
-          <td class="r">55.1%</td><td class="r">48.3%</td><td class="r">42.2%</td>
-          <td class="r">31.1%</td><td class="r">41.7%</td>
-          <td class="r">18.2%</td><td class="r">27.4%</td><td class="r">10.5%</td></tr>
-        <tr><td>小芽</td>
-          <td class="r">53.3%</td><td class="r">50.8%</td><td class="r">37.1%</td>
-          <td class="r">40.9%</td><td class="r">21.5%</td>
-          <td class="r">22.5%</td><td class="r">23.4%</td><td class="r">20.3%</td></tr>
-        <tr><td>丸子🎖️</td>
-          <td class="r">55.3%</td><td class="r">50.1%</td><td class="r">33.8%</td>
-          <td class="r">41.4%</td><td class="r">38.9%</td>
-          <td class="r">22.8%</td><td class="r">27.2%</td><td class="r">16.2%</td></tr>
-        <tr style="background:#f8fafc;"><td>花花🌱</td>
-          <td class="r">33.9%</td><td class="r ne">—</td><td class="r">34.4%</td>
-          <td class="r">34.6%</td><td class="r">52.7%</td>
-          <td class="r ne">—</td><td class="r ne">—</td><td class="r">20.0%</td></tr>
-        <tr style="background:var(--lt);font-weight:600;"><td>店铺均值</td>
-          <td class="r">55.1%</td><td class="r">50.3%</td><td class="r">36.6%</td>
-          <td class="r">37.1%</td><td class="r">36.5%</td>
-          <td class="r">24.8%</td><td class="r">28.6%</td><td class="r">15.8%</td></tr>
-      </tbody>
-    </table>
-    <div class="fn">
-      蛋宝儿在理想燃料·天猫（56.6%）和IDN·天猫（35.5%）均为最高，转化能力突出。花花在理想燃料·京东POP转化率52.7%较高，但样本量少（19次接待）需谨慎参考。晚晚在IDN·天猫（18.2%）和IDN·小红书（10.5%）转化率偏低，建议针对IDN产品加强话术辅导。
-    </div>
-  </div>
-</div>
-
-<!-- ===== 客服表现 ===== -->
-<div class="pg" id="pg-staff">
-  <div class="st">👤 客服个人月度综合表现</div>
-  <div class="ins" style="margin-bottom:14px;">
-    <strong>ℹ️ 说明：</strong>丸子（呦呦）为客服组长，兼承担管理协调职能，接待量偏低属正常，排名供参考不做简单横向评价。花花为5月新人，周期3起上线，周期1–2无数据。满意度0且基数不足的不纳入均值。
-  </div>
-  <div class="sgrid">
-    <div class="sc" style="border-top-color:#2563eb;">
-      <div class="sav" style="background:linear-gradient(135deg,#1d4ed8,#60a5fa);">柒</div>
-      <div class="sn">小柒（李朋彦）</div><div class="sr" style="color:#2563eb;font-weight:600;">接待量 #1</div>
-      <div class="ss"><span>月接待量</span><span class="sv" style="color:#2563eb;">2,027</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv">¥119,012</span></div>
-      <div class="ss"><span>人效</span><span class="sv">¥58.7</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv">54.1%</span></div>
-      <div class="ss"><span>满意度</span><span class="sv">94.9%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv">8.7s/13.9s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量</span><span>2,027</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:100%;background:#2563eb;"></div></div></div>
-    </div>
-    <div class="sc" style="border-top-color:#dc2626;">
-      <div class="sav" style="background:linear-gradient(135deg,#b91c1c,#f87171);">宝</div>
-      <div class="sn">蛋宝儿</div><div class="sr" style="color:#dc2626;font-weight:600;">销售额#1·转化率#1</div>
-      <div class="ss"><span>月接待量</span><span class="sv">2,014</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv" style="color:#dc2626;">¥120,169</span></div>
-      <div class="ss"><span>人效</span><span class="sv">¥59.7</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv" style="color:#dc2626;">56.6%</span></div>
-      <div class="ss"><span>满意度</span><span class="sv">93.6%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv">13.0s/20.7s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量</span><span>2,014</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:99.4%;background:#dc2626;"></div></div></div>
-    </div>
-    <div class="sc" style="border-top-color:#059669;">
-      <div class="sav" style="background:linear-gradient(135deg,#047857,#34d399);">晚</div>
-      <div class="sn">晚晚</div><div class="sr">客服成员</div>
-      <div class="ss"><span>月接待量</span><span class="sv">1,840</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv">¥98,542</span></div>
-      <div class="ss"><span>人效</span><span class="sv">¥53.6</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv">55.1%</span></div>
-      <div class="ss"><span>满意度</span><span class="sv" style="color:#059669;">96.8%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv">14.5s/16.1s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量</span><span>1,840</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:90.8%;background:#059669;"></div></div></div>
-    </div>
-    <div class="sc" style="border-top-color:#7c3aed;">
-      <div class="sav" style="background:linear-gradient(135deg,#6d28d9,#c084fc);">芽</div>
-      <div class="sn">小芽</div><div class="sr" style="color:#7c3aed;font-weight:600;">响应效率 #1</div>
-      <div class="ss"><span>月接待量</span><span class="sv">1,685</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv">¥89,303</span></div>
-      <div class="ss"><span>人效</span><span class="sv">¥53.0</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv">53.3%</span></div>
-      <div class="ss"><span>满意度</span><span class="sv" style="color:#059669;">97.4%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv" style="color:#059669;">9.1s/12.4s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量</span><span>1,685</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:83.1%;background:#7c3aed;"></div></div></div>
-    </div>
-    <div class="sc" style="border-top-color:#f59e0b;">
-      <div class="sav" style="background:linear-gradient(135deg,#b45309,#fcd34d);">丸</div>
-      <div class="sn">丸子（呦呦）</div><div class="sr" style="color:#f59e0b;font-weight:600;">🎖️ 客服组长</div>
-      <div class="ss"><span>月接待量</span><span class="sv">1,347</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv">¥96,786</span></div>
-      <div class="ss"><span>人效</span><span class="sv" style="color:#f59e0b;">¥71.9</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv">55.3%</span></div>
-      <div class="ss"><span>满意度</span><span class="sv">95.0%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv">15.5s/21.0s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量（兼管理）</span><span>1,347</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:66.5%;background:#f59e0b;"></div></div></div>
-    </div>
-    <div class="sc" style="border-top-color:#94a3b8;">
-      <div class="sav" style="background:linear-gradient(135deg,#475569,#94a3b8);">花</div>
-      <div class="sn">花花</div><div class="sr" style="color:#94a3b8;font-weight:600;">🌱 新人(周期3起)</div>
-      <div class="ss"><span>月接待量</span><span class="sv">198</span></div>
-      <div class="ss"><span>月销售额</span><span class="sv">¥9,426</span></div>
-      <div class="ss"><span>人效</span><span class="sv">¥47.6</span></div>
-      <div class="ss"><span>理想燃料·天猫转化</span><span class="sv">33.9%▲</span></div>
-      <div class="ss"><span>满意度</span><span class="sv" style="color:#059669;">100%</span></div>
-      <div class="ss"><span>首响/平响</span><span class="sv">9.3s/23.7s</span></div>
-      <div class="mbar-w"><div class="mbar-l"><span>接待量(周期3–4)</span><span>198</span></div>
-        <div class="mbar"><div class="mbar-f" style="width:9.8%;background:#94a3b8;"></div></div></div>
-    </div>
-  </div>
-
-  <div class="g2">
-    <div class="cc"><h3>月度接待量排名</h3><div class="cv h200"><canvas id="c_rk_rec"></canvas></div></div>
-    <div class="cc"><h3>月度销售额排名</h3><div class="cv h200"><canvas id="c_rk_sales"></canvas></div></div>
-  </div>
-  <div class="g2">
-    <div class="cc"><h3>月度人效排名（丸子组长谨慎参考）</h3><div class="cv h200"><canvas id="c_rk_eff"></canvas></div></div>
-    <div class="cc">
-      <h3>响应效率排名（平均响应时间，越低越优）</h3>
-      <div class="cv h200"><canvas id="c_rk_resp"></canvas></div>
-      <div class="fn">花花新人平响23.7s为上线初期正常表现；蛋宝儿20.7s为老员工最高，是主要优化对象。</div>
-    </div>
-  </div>
-
-  <div class="st">🏆 综合排名汇总</div>
-  <div class="cc">
-    <table class="tbl">
-      <thead><tr><th>客服</th>
-        <th class="r">月接待</th><th class="r">排名</th>
-        <th class="r">月销售</th><th class="r">排名</th>
-        <th class="r">人效(¥)</th><th class="r">排名</th>
-        <th class="r">理想燃料·天猫转化</th><th class="r">排名</th>
-        <th class="r">IDN·天猫转化</th><th class="r">排名</th>
-        <th class="r">满意度</th><th class="r">排名</th>
-        <th class="r">平响(s)</th><th class="r">排名</th>
-      </tr></thead>
-      <tbody>
-        <tr><td>小柒</td>
-          <td class="r">2,027</td><td class="r"><span class="rb rb1">1</span></td>
-          <td class="r">¥119,012</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r">58.7</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">54.1%</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">24.8%</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">94.9%</td><td class="r"><span class="rb rb5">5</span></td>
-          <td class="r">13.9</td><td class="r"><span class="rb rb2">2</span></td></tr>
-        <tr><td>蛋宝儿</td>
-          <td class="r">2,014</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r">¥120,169</td><td class="r"><span class="rb rb1">1</span></td>
-          <td class="r">59.7</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r" style="color:#dc2626;font-weight:700;">56.6%</td><td class="r"><span class="rb rb1">1</span></td>
-          <td class="r" style="color:#dc2626;font-weight:700;">35.5%</td><td class="r"><span class="rb rb1">1</span></td>
-          <td class="r">93.6%</td><td class="r"><span class="rb rb6">6</span></td>
-          <td class="r">20.7</td><td class="r"><span class="rb rb5">5</span></td></tr>
-        <tr><td>晚晚</td>
-          <td class="r">1,840</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">¥98,542</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">53.6</td><td class="r"><span class="rb rb5">5</span></td>
-          <td class="r">55.1%</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r">18.2%</td><td class="r"><span class="rb rb6">6▼</span></td>
-          <td class="r">96.8%</td><td class="r"><span class="rb rb3">3</span></td>
-          <td class="r">16.1</td><td class="r"><span class="rb rb3">3</span></td></tr>
-        <tr><td>小芽</td>
-          <td class="r">1,685</td><td class="r"><span class="rb rb4">4</span></td>
-          <td class="r">¥89,303</td><td class="r"><span class="rb rb4">4</span></td>
-          <td class="r">53.0</td><td class="r"><span class="rb rb6">6</span></td>
-          <td class="r">53.3%</td><td class="r"><span class="rb rb4">4</span></td>
-          <td class="r">22.5%</td><td class="r"><span class="rb rb4">4</span></td>
-          <td class="r">97.4%</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r" style="color:#059669;font-weight:700;">12.4</td><td class="r"><span class="rb rb1">1</span></td></tr>
-        <tr><td>丸子🎖️组长</td>
-          <td class="r">1,347</td><td class="r"><span class="rb rb5">5※</span></td>
-          <td class="r">¥96,786</td><td class="r"><span class="rb rb5">5※</span></td>
-          <td class="r" style="color:#f59e0b;font-weight:700;">71.9</td><td class="r"><span class="rb rb1">1※</span></td>
-          <td class="r">55.3%</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r">22.8%</td><td class="r"><span class="rb rb2">2</span></td>
-          <td class="r">95.0%</td><td class="r"><span class="rb rb4">4</span></td>
-          <td class="r">21.0</td><td class="r"><span class="rb rb6">6※</span></td></tr>
-        <tr style="background:#f8fafc;"><td>花花🌱新人</td>
-          <td class="r">198</td><td class="r"><span class="rb rb6">6▲</span></td>
-          <td class="r">¥9,426</td><td class="r"><span class="rb rb6">6▲</span></td>
-          <td class="r">47.6</td><td class="r"><span class="rb rb4">4▲</span></td>
-          <td class="r">33.9%</td><td class="r"><span class="rb rb6">6▲</span></td>
-          <td class="r ne">—</td><td class="r">—</td>
-          <td class="r" style="color:#059669;font-weight:700;">100%</td><td class="r"><span class="rb rb1">1▲</span></td>
-          <td class="r">23.7</td><td class="r">—▲</td></tr>
-      </tbody>
-    </table>
-    <div class="fn">※丸子组长接待量因兼管理职责偏低，人效排名参考意义有限。▲花花仅2周数据，各项指标谨慎参考。▼晚晚IDN·天猫转化率18.2%为全队最低，建议针对IDN产品话术专项辅导。</div>
-  </div>
-</div>
-
-<!-- ===== 周期3诊断 ===== -->
-<div class="pg" id="pg-w3">
-  <div class="st">🔍 周期3专项诊断：接待量↑ 销售额↓</div>
-  <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;
-    border-radius:14px;padding:18px 22px;margin-bottom:18px;">
-    <div style="font-size:14px;font-weight:800;color:#78350f;margin-bottom:12px;">⚡ 核心判断</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-      <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:14px;border-left:4px solid #2563eb;">
-        <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:8px;">📣 周期2：先咨询 → 后下单</div>
-        <div style="font-size:11px;line-height:1.8;">
-          · 活动规则新鲜，用户大量进入"咨询确认型"会话<br>
-          · 客服解答→立即下单，转化路径极短<br>
-          · 理想燃料·天猫转化率达59.1%（历史峰值）<br>
-          · 接待量+56.7%，销售额同步+300%
+    <div class="brand-grid">
+      <!-- 理想燃料 -->
+      <div class="brand-card">
+        <div class="brand-card-header" style="background:#f0f5ff">
+          <h3 style="color:#1d4ed8">理想燃料</h3>
+          <span class="brand-tag fuel">国内产品</span>
+        </div>
+        <div class="brand-metrics">
+          <div class="brand-row"><span class="lbl">接待量</span><span class="val">7,134 <span class="chg up">↑18.5%</span></span></div>
+          <div class="brand-row"><span class="lbl">销售额</span><span class="val">¥363,989 <span class="chg up">↑52.6%</span></span></div>
+          <div class="brand-row"><span class="lbl">人效</span><span class="val">¥51.0 <span class="chg up">↑28.7%</span></span></div>
+          <div class="brand-row"><span class="lbl">满意度</span><span class="val">91.7% <span class="chg dn">↓4.5pp</span></span></div>
+          <div class="brand-row"><span class="lbl">首次响应</span><span class="val">11.9s <span class="chg neu">持平</span></span></div>
+          <div class="brand-row"><span class="lbl">平均响应</span><span class="val">17.2s <span class="chg dn">↑6.2%</span></span></div>
         </div>
       </div>
-      <div style="background:rgba(255,255,255,.75);border-radius:10px;padding:14px;border-left:4px solid #f59e0b;">
-        <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px;">🔄 周期3：先下单 → 再咨询 / 咨询≠成交</div>
-        <div style="font-size:11px;line-height:1.8;">
-          · 周期2新订单进入履约期，售后咨询激增<br>
-          · 部分热销SKU（IDN为主）库存耗尽，无法成交<br>
-          · 新客冲动消退，剩余流量观望型为主<br>
-          · 接待量+5.7%，销售额-19.1%，转化率回落
+      <!-- IDN -->
+      <div class="brand-card">
+        <div class="brand-card-header" style="background:#f5f3ff">
+          <h3 style="color:#5b21b6">IDN理想营养</h3>
+          <span class="brand-tag idn">海外保税</span>
+        </div>
+        <div class="brand-metrics">
+          <div class="brand-row"><span class="lbl">接待量</span><span class="val">2,803 <span class="chg up">↑7.2%</span></span></div>
+          <div class="brand-row"><span class="lbl">销售额</span><span class="val">¥219,336 <span class="chg up">↑19.4%</span></span></div>
+          <div class="brand-row"><span class="lbl">人效</span><span class="val">¥78.3 <span class="chg up">↑11.4%</span></span></div>
+          <div class="brand-row"><span class="lbl">满意度</span><span class="val">92.6% <span class="chg up">↑1.4pp</span></span></div>
+          <div class="brand-row"><span class="lbl">首次响应</span><span class="val">11.6s <span class="chg up">↓4.1%</span></span></div>
+          <div class="brand-row"><span class="lbl">平均响应</span><span class="val">15.9s <span class="chg up">↓5.4%</span></span></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="g2">
-    <div class="cc">
-      <h3>四周：接待量 vs 销售额走势（全渠道）</h3>
-      <div class="cv h240"><canvas id="c_w3_main"></canvas></div>
-      <div class="fn">🔴 周期3两线背离是"咨询结构转变"的典型信号</div>
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="chart-title">接待量对比（4月 vs 5月）</div>
+        <div class="legend-row">
+          <div class="legend-item"><span class="legend-sq" style="background:#93c5fd"></span>4月</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>理想燃料5月</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#7c3aed"></span>IDN 5月</div>
+        </div>
+        <div class="chart-wrap" style="height:200px"><canvas id="c-brand-vol" role="img" aria-label="品牌接待量月度对比">品牌接待量</canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">销售额对比（4月 vs 5月，万元）</div>
+        <div class="legend-row">
+          <div class="legend-item"><span class="legend-sq" style="background:#93c5fd"></span>4月</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>理想燃料5月</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#7c3aed"></span>IDN 5月</div>
+        </div>
+        <div class="chart-wrap" style="height:200px"><canvas id="c-brand-sales" role="img" aria-label="品牌销售额月度对比">品牌销售额</canvas></div>
+      </div>
     </div>
-    <div class="cc">
-      <h3>各品牌·店铺 周期2→周期3 销售额变化</h3>
-      <div class="cv h240"><canvas id="c_w3_bs_sales"></canvas></div>
-      <div class="fn">理想燃料·拼多多周期3销售额-65.2%且接待量同步减少，与其他店铺"接待增/销售降"模式不同，疑为平台活动退出。</div>
-    </div>
-  </div>
-  <div class="g2">
-    <div class="cc">
-      <h3>各品牌·店铺 四周人效趋势</h3>
-      <div class="cv h240"><canvas id="c_w3_eff"></canvas></div>
-    </div>
-    <div class="cc">
-      <h3>IDN各店铺四周接待量vs销售额（库存诊断）</h3>
-      <div class="cv h240"><canvas id="c_w3_idn"></canvas></div>
-      <div class="fn">IDN·抖音周期3接待量-21%，销售额-47.6%，降幅比例远超接待量，符合库存耗尽特征。IDN·天猫接待量微增但销售额-21.7%，同样指向供给端问题。</div>
-    </div>
-  </div>
-  <div class="ins g">
-    <strong>🌟 周期3逆势亮点：小芽销售额唯一正增长（+22%）</strong><br>
-    周期3小芽接待量+49%（416→619），销售额+22%（¥29,327→¥35,826）。其全队最快响应速度（平响12.4s）在活动中期仍能有效锁定转化意向用户。建议提炼其话术与节奏分享给团队。
-  </div>
-</div>
 
-<!-- ===== 结论建议 ===== -->
-<div class="pg" id="pg-end">
-  <div class="st">📝 月度主要结论</div>
-  <div class="g3">
-    <div class="cc"><h3 style="color:#2563eb;">📈 活动承接</h3>
-      <ul style="list-style:none;font-size:12px;line-height:2.1;padding:4px 0;">
-        <li>· 周期2大促承接稳定：接待+56.7%，销售+300%</li>
-        <li>· 理想燃料·天猫、IDN·抖音为大促主战场</li>
-        <li>· 周期3咨询结构转变属活动中期正常规律</li>
-        <li>· 花花新人周期3顺利上线，满意度100%</li>
-      </ul>
+    <div class="chart-card">
+      <div class="chart-title">品牌服务指标横向对比（5月）</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>理想燃料</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#7c3aed"></span>IDN</div>
+      </div>
+      <div class="chart-wrap" style="height:200px"><canvas id="c-brand-kpi" role="img" aria-label="品牌多维指标对比">品牌指标对比</canvas></div>
     </div>
-    <div class="cc"><h3 style="color:#059669;">💰 销售与转化</h3>
-      <ul style="list-style:none;font-size:12px;line-height:2.1;padding:4px 0;">
-        <li>· 蛋宝儿月度销售额#1且转化率#1（理想燃料·天猫56.6%）</li>
-        <li>· IDN·抖音人效峰值¥119.7，为全渠道最高</li>
-        <li>· 大促期理想燃料·天猫转化率峰值59.1%</li>
-        <li>· 晚晚IDN·天猫转化率18.2%偏低，需专项辅导</li>
-      </ul>
+
+    <div class="insight-grid">
+      <div class="insight">
+        <b>理想燃料：大促最大受益方</b>
+        销售额增幅52.6%，活动杠杆效应强。天猫与抖音两渠道是主要增量来源。满意度小幅下滑(-4.5pp)与大促期间咨询量激增、处理复杂度提升相关，属正常范围。
+      </div>
+      <div class="insight good">
+        <b>IDN：高价值客群稳中向好</b>
+        人效¥78.3持续高于理想燃料¥51.0，体现海外高客单价优势。满意度+响应速度均改善，抖音IDN销售额突破10万，是重点增长渠道。
+      </div>
     </div>
-    <div class="cc"><h3 style="color:#7c3aed;">🛡️ 服务稳定性</h3>
-      <ul style="list-style:none;font-size:12px;line-height:2.1;padding:4px 0;">
-        <li>· 月均满意度95.7%，活动期最低93.8%，基线稳健</li>
-        <li>· IDN·抖音周期3满意度66.7%为全渠道最低，需关注</li>
-        <li>· 小芽平响12.4s全队最优，满意度97.4%双优</li>
-        <li>· 周期4满意度97.4%，大促压力有效消化</li>
-      </ul>
+  </section>
+
+  <!-- ═══════════════════════════════════════ 3. 店铺维度 -->
+  <section class="section" id="store">
+    <div class="section-header">
+      <div class="section-title"><div class="section-icon">🏪</div>店铺维度分析</div>
+      <span class="section-tag">8个品牌·店铺组合</span>
     </div>
-  </div>
 
-  <div class="st">⚠️ 异常项汇总</div>
-  <div class="ins r"><strong>🔴 理想燃料·拼多多周期3断崖（-65.2%）：</strong>接待量与销售额同步减少，与"接待增销售降"的活动中期模式不同，更可能是平台活动政策变化，建议运营确认5月16日后拼多多活动状态。</div>
-  <div class="ins o"><strong>🟠 IDN各店铺周期3销售额普降（库存问题）：</strong>IDN·天猫-21.7%、IDN·抖音-47.6%，接待量基本持平，高度符合"热销SKU库存耗尽"特征。建议为IDN热销品设置库存预警（30%阈值），活动期主动引导用户关注替代品。</div>
-  <div class="ins p"><strong>🟣 IDN·抖音周期3满意度骤降至66.7%：</strong>为全渠道全周期最低值。周期4已恢复至100%，属于活动高峰压力集中的阶段性波动，但下次大促前需针对IDN·抖音排班和话术做专项准备。</div>
-  <div class="ins" style="border-color:#0ea5e9;"><strong>🔵 晚晚IDN·天猫转化率18.2%为全队最低：</strong>理想燃料·天猫转化率55.1%表现正常，但IDN产品转化明显弱，说明对IDN产品特性（海外品、保税仓）掌握度不足，建议针对IDN产品做专项培训。</div>
+    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi-card">
+        <div class="kpi-label">接待量最高</div>
+        <div class="kpi-val" style="font-size:18px;line-height:1.3">理想燃料·天猫</div>
+        <div class="kpi-chg neu">5月 3,385次</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-label">销售额最高</div>
+        <div class="kpi-val" style="font-size:18px;line-height:1.3">理想燃料·天猫</div>
+        <div class="kpi-chg neu">5月 ¥202,183</div>
+      </div>
+      <div class="kpi-card teal">
+        <div class="kpi-label">人效最高</div>
+        <div class="kpi-val" style="font-size:18px;line-height:1.3">IDN·抖音</div>
+        <div class="kpi-chg neu">¥90.97/次</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">销售增幅最大</div>
+        <div class="kpi-val" style="font-size:18px;line-height:1.3">理想燃料·抖音</div>
+        <div class="kpi-chg up">↑ 150.5%</div>
+      </div>
+    </div>
 
-  <div class="st">💡 3条管理优化建议</div>
-  <div class="ins g"><strong>建议一：大促期响应SLA + 弹性排班</strong><br>
-    周期2–3活动期团队平响升至17–18s，蛋宝儿最高23s。建议制定大促期平响≤20s的SLA目标，超阈值触发排班补位，丸子组长实时监控并介入。</div>
-  <div class="ins o"><strong>建议二：活动中期开启售后智能分流，保住人效</strong><br>
-    周期3售后型咨询涌入导致人效从¥79.5降至¥60.8。建议活动第5–7天起启动智能客服承接标准售后（物流/发货/签收），人工客服专注售前转化。</div>
-  <div class="ins"><strong>建议三：以蛋宝儿+小芽为导师，针对性提升薄弱项</strong><br>
-    蛋宝儿在理想燃料·天猫（56.6%）和IDN·天猫（35.5%）转化率均为第一，建议提炼其天猫接待话术；小芽响应最快且周期3逆势增长，是活动中期转化标杆。以两人为联合导师重点辅导：花花（天猫转化率需提升至40%+）和晚晚（IDN产品专项培训）。</div>
+    <!-- Store table -->
+    <div class="table-wrap" style="margin-bottom:1.25rem">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>品牌·店铺</th>
+            <th class="num">4月接待</th>
+            <th class="num">5月接待</th>
+            <th class="num">环比</th>
+            <th class="num">4月销售额</th>
+            <th class="num">5月销售额</th>
+            <th class="num">销售环比</th>
+            <th class="num">5月人效</th>
+            <th class="num">5月满意度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="brand-pill fuel">理想燃料</span> 天猫</td>
+            <td class="num">2,944</td><td class="num bold">3,385</td>
+            <td class="num"><span class="chg-badge up">+15.0%</span></td>
+            <td class="num">¥145,970</td><td class="num bold">¥202,183</td>
+            <td class="num"><span class="chg-badge up">+38.5%</span></td>
+            <td class="num">¥59.73</td>
+            <td class="num">94.9%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill fuel">理想燃料</span> 抖音</td>
+            <td class="num">1,074</td><td class="num bold">1,636</td>
+            <td class="num"><span class="chg-badge up">+52.3%</span></td>
+            <td class="num">¥35,557</td><td class="num bold">¥89,056</td>
+            <td class="num"><span class="chg-badge up">+150.5%</span></td>
+            <td class="num">¥54.44</td>
+            <td class="num">92.6%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill fuel">理想燃料</span> 拼多多</td>
+            <td class="num">1,287</td><td class="num">1,247</td>
+            <td class="num"><span class="chg-badge dn">-3.1%</span></td>
+            <td class="num">¥29,360</td><td class="num">¥37,396</td>
+            <td class="num"><span class="chg-badge up">+27.4%</span></td>
+            <td class="num">¥29.99</td>
+            <td class="num" style="color:var(--text3)">—</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill fuel">理想燃料</span> 小红书</td>
+            <td class="num">290</td><td class="num">351</td>
+            <td class="num"><span class="chg-badge up">+21.0%</span></td>
+            <td class="num">¥9,500</td><td class="num">¥13,827</td>
+            <td class="num"><span class="chg-badge up">+45.5%</span></td>
+            <td class="num">¥39.39</td>
+            <td class="num">89.3%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill fuel">理想燃料</span> 京东POP</td>
+            <td class="num">423</td><td class="num">515</td>
+            <td class="num"><span class="chg-badge up">+21.7%</span></td>
+            <td class="num">¥18,159</td><td class="num">¥21,528</td>
+            <td class="num"><span class="chg-badge up">+18.5%</span></td>
+            <td class="num">¥41.80</td>
+            <td class="num">88.9%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill idn">IDN</span> 抖音</td>
+            <td class="num">1,100</td><td class="num bold">1,096</td>
+            <td class="num"><span class="chg-badge neu">-0.4%</span></td>
+            <td class="num">¥75,024</td><td class="num bold">¥99,706</td>
+            <td class="num"><span class="chg-badge up">+32.9%</span></td>
+            <td class="num bold">¥90.97</td>
+            <td class="num">84.3%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill idn">IDN</span> 天猫</td>
+            <td class="num">835</td><td class="num">1,064</td>
+            <td class="num"><span class="chg-badge up">+27.4%</span></td>
+            <td class="num">¥44,206</td><td class="num">¥69,556</td>
+            <td class="num"><span class="chg-badge up">+57.3%</span></td>
+            <td class="num">¥65.37</td>
+            <td class="num">96.6%</td>
+          </tr>
+          <tr>
+            <td><span class="brand-pill idn">IDN</span> 小红书</td>
+            <td class="num">679</td><td class="num">643</td>
+            <td class="num"><span class="chg-badge dn">-5.3%</span></td>
+            <td class="num">¥64,404</td><td class="num">¥50,074</td>
+            <td class="num"><span class="chg-badge dn">-22.3%</span></td>
+            <td class="num">¥77.88</td>
+            <td class="num">97.5%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="st">📌 管理层综合评估</div>
-  <div class="cc" style="font-size:12px;line-height:1.9;">
-    <p style="margin-bottom:10px;"><strong>月度整体判断：</strong>5月电商客服团队整体表现优秀。8个品牌×店铺维度全面覆盖，月度总销售额¥533,237，理想燃料·天猫为最大贡献单元（月度¥191,458，占35.9%），IDN·抖音人效峰值¥119.7为全渠道最高。团队在接待量高峰期（周期3最高2,724次/周）维持了93.8%以上满意度基线。</p>
-    <p style="margin-bottom:10px;"><strong>突出贡献：</strong>蛋宝儿月度销售额第一（¥120,169），在理想燃料·天猫和IDN·天猫转化率均居全队第一，是转化端核心贡献者；小柒接待量第一（2,027次），承接主力流量；小芽响应最快（平响12.4s）且满意度第二（97.4%），周期3逆势转化突出；丸子组长人效¥71.9居首，在兼管理职责下保持了高效转化。</p>
-    <p><strong>需持续关注：</strong>① 蛋宝儿平响20.7s偏高需改善；② IDN库存备货策略待优化；③ 花花天猫转化率33.9%偏低需专项辅导；④ 晚晚IDN·天猫转化率18.2%为全队最低，需IDN产品专项培训；⑤ IDN·抖音周期3满意度曾骤降至66.7%，下次大促需提前准备。</p>
-  </div>
+    <div class="chart-card">
+      <div class="chart-title">各店铺接待量（4月 vs 5月）</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#bfdbfe"></span>4月</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>5月·理想燃料</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#7c3aed"></span>5月·IDN</div>
+      </div>
+      <div class="chart-wrap" style="height:300px"><canvas id="c-store-vol" role="img" aria-label="8个店铺接待量对比">店铺接待量</canvas></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">各店铺销售额（4月 vs 5月，万元）</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#bfdbfe"></span>4月</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>5月·理想燃料</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#7c3aed"></span>5月·IDN</div>
+      </div>
+      <div class="chart-wrap" style="height:300px"><canvas id="c-store-sales" role="img" aria-label="8个店铺销售额对比">店铺销售额</canvas></div>
+    </div>
+
+    <p class="note">拼多多原始数据无满意度字段，标记为"—"，不纳入满意度均值及排名。IDN·小红书销售额下滑(-22.3%)与4月甘氨酸镁上新活动高基数相关，非趋势性下滑。</p>
+  </section>
+
+  <!-- ═══════════════════════════════════════ 4. 客服表现 -->
+  <section class="section" id="agent">
+    <div class="section-header">
+      <div class="section-title"><div class="section-icon">👤</div>客服个人表现</div>
+      <span class="section-tag">6名客服 · 5月数据</span>
+    </div>
+
+    <div class="agent-grid">
+      <!-- 蛋宝儿 -->
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="avatar" style="background:#dbeafe;color:#1d4ed8">蛋</div>
+          <div>
+            <div class="agent-name">蛋宝儿</div>
+            <div class="agent-sub">接待量第1 · 销售额第1</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">2,189 <span class="rank-dot rd1">1</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥131,320 <span class="rank-dot rd1">1</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥59.99 <span class="rank-dot rd3">3</span></span></div>
+          <div class="agent-metric-row"><span class="ml">满意度</span><span class="mv">93.4% <span class="rank-dot rd3">3</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv">12.9s / 20.7s</span></div>
+        </div>
+      </div>
+      <!-- 小柒 -->
+      <div class="agent-card" style="border-color:#93c5fd">
+        <div class="agent-head" style="background:#f0f5ff">
+          <div class="avatar" style="background:#1d4ed8;color:#fff">柒</div>
+          <div>
+            <div class="agent-name">小柒（李朋彦）</div>
+            <div class="agent-sub">响应+满意度综合最优</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">2,148 <span class="rank-dot rd2">2</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥128,719 <span class="rank-dot rd2">2</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥59.93 <span class="rank-dot rd2">2</span></span></div>
+          <div class="agent-metric-row"><span class="ml">满意度</span><span class="mv">94.4% <span class="rank-dot rd2">2</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv">8.6s / <b>13.9s</b> ⚡</span></div>
+        </div>
+      </div>
+      <!-- 晚晚 -->
+      <div class="agent-card">
+        <div class="agent-head">
+          <div class="avatar" style="background:#d1fae5;color:#065f46">晚</div>
+          <div>
+            <div class="agent-name">晚晚</div>
+            <div class="agent-sub">接待/销售/响应均衡稳定</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">2,062 <span class="rank-dot rd3">3</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥111,676 <span class="rank-dot rd3">3</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥54.16 <span class="rank-dot rdn">5</span></span></div>
+          <div class="agent-metric-row"><span class="ml">满意度</span><span class="mv">93.1% <span class="rank-dot rd3">3</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv">14.3s / 16.5s</span></div>
+        </div>
+      </div>
+      <!-- 小芽 -->
+      <div class="agent-card" style="border-color:#fca5a5">
+        <div class="agent-head" style="background:#fff1f2">
+          <div class="avatar" style="background:#fee2e2;color:#991b1b">芽</div>
+          <div>
+            <div class="agent-name">小芽</div>
+            <div class="agent-sub" style="color:#b91c1c">⚠ 满意度下滑需关注</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">1,812 <span class="rank-dot rdn">4</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥93,874 <span class="rank-dot rdn">4</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥51.81 <span class="rank-dot rdn">6</span></span></div>
+          <div class="agent-metric-row" style="color:var(--red)"><span class="ml">满意度</span><span class="mv" style="color:var(--red)">85.4% ↓9.4pp <span class="rank-dot rdn">6</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv"><b>9.0s / 12.2s</b> 最快</span></div>
+        </div>
+      </div>
+      <!-- 丸子 -->
+      <div class="agent-card" style="border-color:#c4b5fd">
+        <div class="agent-head" style="background:#f5f3ff">
+          <div class="avatar" style="background:#ede9fb;color:#5b21b6">丸</div>
+          <div>
+            <div class="agent-name">丸子（呦呦）</div>
+            <div class="agent-sub" style="color:#5b21b6">组长 · 人效第1</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">1,431 <span class="rank-dot rdn">5</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥100,779 <span class="rank-dot rdn">4</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥70.43 <span class="rank-dot rd1">1</span></span></div>
+          <div class="agent-metric-row"><span class="ml">满意度</span><span class="mv">95.2% <span class="rank-dot rd1">1</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv">15.6s / 21.1s</span></div>
+        </div>
+      </div>
+      <!-- 花花 -->
+      <div class="agent-card" style="border-style:dashed">
+        <div class="agent-head">
+          <div class="avatar" style="background:#fef9c3;color:#713f12">花</div>
+          <div>
+            <div class="agent-name">花花</div>
+            <div class="agent-sub">新人培训期 · 接待量陆续增加</div>
+          </div>
+        </div>
+        <div class="agent-metrics">
+          <div class="agent-metric-row"><span class="ml">接待量</span><span class="mv">295 <span class="rank-dot rdn">6</span></span></div>
+          <div class="agent-metric-row"><span class="ml">销售额</span><span class="mv">¥16,957 <span class="rank-dot rdn">6</span></span></div>
+          <div class="agent-metric-row"><span class="ml">人效</span><span class="mv">¥57.48 <span class="rank-dot rdn">4</span></span></div>
+          <div class="agent-metric-row"><span class="ml">满意度</span><span class="mv">91.7% <span class="rank-dot rdn">5</span></span></div>
+          <div class="agent-metric-row"><span class="ml">首响/平响</span><span class="mv">9.0s / 22.0s</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:1rem">丸子为团队组长，接待量受管理职责影响，人效¥70.43排名第1具参考价值，但需结合管理投入综合评估，不宜与纯接待人员直接比较。花花处于新人培训期，接待量偏低，所有排名数据供参考，建议6月起正式纳入横向对比。拼多多无满意度数据，不纳入满意度排名。</p>
+
+    <div class="chart-card" style="margin-top:1.25rem">
+      <div class="chart-title">客服接待量与销售额（5月）</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>接待量（左轴）</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#b45309; width:20px;height:3px;border-radius:0"></span>销售额（右轴）</div>
+      </div>
+      <div class="chart-wrap" style="height:240px"><canvas id="c-agent-main" role="img" aria-label="6名客服接待量与销售额">客服接待与销售</canvas></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ 5. 综合排名 -->
+  <section class="section" id="ranking">
+    <div class="section-header">
+      <div class="section-title"><div class="section-icon">🏆</div>综合排名汇总</div>
+      <span class="section-tag">5月 · 6维度</span>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom:1.25rem">
+      <table class="rank-table">
+        <thead>
+          <tr>
+            <th>排名</th>
+            <th>接待量</th>
+            <th>销售额</th>
+            <th>人效</th>
+            <th>满意度</th>
+            <th>响应效率<br><span style="font-weight:400;font-size:10px">(平响，越低越好)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank-dot rd1" style="display:inline-flex">1</span></td>
+            <td>蛋宝儿</td><td>蛋宝儿</td>
+            <td>丸子 <span style="font-size:10px;color:var(--text3)">(组长)</span></td>
+            <td>丸子 <span style="font-size:10px;color:var(--text3)">(组长)</span></td>
+            <td>小芽</td>
+          </tr>
+          <tr>
+            <td><span class="rank-dot rd2" style="display:inline-flex">2</span></td>
+            <td>小柒</td><td>小柒</td><td>小柒</td><td>小柒</td><td>小柒</td>
+          </tr>
+          <tr>
+            <td><span class="rank-dot rd3" style="display:inline-flex">3</span></td>
+            <td>晚晚</td><td>晚晚</td><td>蛋宝儿</td><td>晚晚</td><td>晚晚</td>
+          </tr>
+          <tr>
+            <td><span class="rank-dot rdn" style="display:inline-flex">4</span></td>
+            <td>小芽</td><td>丸子</td><td>花花</td><td>蛋宝儿</td><td>蛋宝儿</td>
+          </tr>
+          <tr>
+            <td><span class="rank-dot rdn" style="display:inline-flex">5</span></td>
+            <td>丸子</td><td>小芽</td><td>晚晚</td><td>花花</td><td>丸子</td>
+          </tr>
+          <tr>
+            <td><span class="rank-dot rdn" style="display:inline-flex">6</span></td>
+            <td>花花</td><td>花花</td><td>小芽</td><td>小芽 ⚠</td><td>花花</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">响应效率 vs 满意度（气泡大小 = 接待量）</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="c-scatter" role="img" aria-label="客服响应时间与满意度散点图">响应与满意度关系</canvas></div>
+      <p class="note" style="margin-top:.5rem">小柒：响应第2+满意度第2，综合最优。小芽：响应速度最快（12.2s）但满意度垫底（85.4%），说明"快"并不等于"好"，需关注回复质量。丸子：响应偏慢但满意度最高，与接待量少+精耕高价值会话有关。</p>
+    </div>
+
+    <!-- 环比变化图 -->
+    <div class="chart-card">
+      <div class="chart-title">客服满意度 4月 vs 5月 变化</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-sq" style="background:#bfdbfe"></span>4月</div>
+        <div class="legend-item"><span class="legend-sq" style="background:#2563c9"></span>5月</div>
+      </div>
+      <div class="chart-wrap" style="height:220px"><canvas id="c-sat-compare" role="img" aria-label="客服满意度月度变化">满意度变化</canvas></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ 6. 结论建议 -->
+  <section class="section" id="conclusion">
+    <div class="section-header">
+      <div class="section-title"><div class="section-icon">💡</div>主要结论与建议</div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:.75rem">主要结论</div>
+      <div class="insight-grid">
+        <div class="insight">
+          <b>① 大促承接能力强，销售贡献超预期</b>
+          5月整体人效¥58.7（+20.1%），销售额+38.2%远超接待量增幅+15.1%，大促期间客单价提升明显，团队完成了高效转化承接。
+        </div>
+        <div class="insight">
+          <b>② 核心三人撑起销售主力</b>
+          蛋宝儿、小柒、晚晚三人接待量占全队64.4%，销售额占63.7%。小柒在响应速度、满意度、销售额三维度均排前2，是本月最全面的客服。
+        </div>
+        <div class="insight alert">
+          <b>③ 小芽满意度下滑需重点关注</b>
+          从4月94.8%降至5月85.4%（-9.4pp），是唯一明显下降成员。响应速度最快但满意度垫底，建议复盘大促期对话记录，关注解决率与话术质量。
+        </div>
+        <div class="insight good">
+          <b>④ 新人花花融入顺利</b>
+          人效¥57.48接近团队均值，满意度91.7%正常。平响22s偏高属新人正常范围。建议6月起正式纳入横向考核。
+        </div>
+        <div class="insight">
+          <b>⑤ IDN高价值客群持续稳定</b>
+          IDN人效¥78.3>理想燃料¥51.0，满意度+响应均改善。抖音IDN销售额突破¥10万，是重点维护渠道。
+        </div>
+        <div class="insight warn">
+          <b>⑥ 拼多多/IDN抖音满意度偏低</b>
+          IDN抖音5月满意度84.3%（4月91.3%），拼多多无数据。建议加强对抖音IDN会话的质检，避免高人效渠道出现服务质量短板。
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:.75rem">3条运营优化建议</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-num">01</div>
+        <div class="tip-title">针对小芽开展质量专项辅导</div>
+        <div class="tip-text">小芽响应最快但满意度下滑最大，建议拉取5月大促期间对话样本，重点排查模板化回复、问题解决率偏低等因素，通过话术升级和产品知识培训提升实质解决能力，而非只追求响应速度。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">02</div>
+        <div class="tip-title">大促节点前做好排班与分流预案</div>
+        <div class="tip-text">理想燃料天猫单月接待3,385次，抖音大幅增至1,636次。建议在6月大促延续期间针对天猫、抖音两大渠道制定高峰排班表，适当向主力客服倾斜资源，控制平响时间，保障核心渠道满意度不因流量冲击下滑。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">03</div>
+        <div class="tip-title">6月启动花花正式考核与IDN培训</div>
+        <div class="tip-text">花花培训期已结束，6月起建议纳入正式横向对比，并设定平响从22s降至18s以内的目标。同时重点加强花花对IDN产品线（保税仓政策、海外产品卖点）的知识覆盖，为团队IDN接待容量扩容做准备。</div>
+      </div>
+    </div>
+  </section>
+
+</main>
 </div>
 
 <script>
-Chart.defaults.font.family='"PingFang SC","Microsoft YaHei",Arial,sans-serif';
-Chart.defaults.font.size=11;
-Chart.defaults.color='#64748b';
+const BLUE='#2563c9', BLUE_L='#93c5fd', PURPLE='#7c3aed', PURPLE_L='#c4b5fd';
+const TEAL='#117a5a', AMBER='#b45309', RED='#b91c1c', GRAY='#9ca3af';
+const COLORS=[BLUE,TEAL,AMBER,RED,PURPLE,'#6b7280'];
 
-const WKS=['周期1\n05.02–08','周期2\n05.09–15','周期3\n05.16–22','周期4\n05.23–29'];
-const WC=['#94a3b8','#3b82f6','#f59e0b','#10b981'];
-
-// 品牌·店铺颜色系统：理想燃料=蓝系，IDN=紫系
-const BS_KEYS=['理想燃料·天猫','理想燃料·抖音','理想燃料·小红书','理想燃料·拼多多','理想燃料·京东POP','IDN·天猫','IDN·抖音','IDN·小红书'];
-const BS_COLORS=['#1d4ed8','#3b82f6','#60a5fa','#93c5fd','#bfdbfe','#6d28d9','#8b5cf6','#c4b5fd'];
-
-const D={
-  w:{rec:[1645,2578,2724,2164],sales:[51193,204852,165665,111527],
-     eff:[31.1,79.5,60.8,51.5],first:[11.1,12.6,12.5,11.1],avg:[16.2,17.9,16.8,16.0],
-     sat:[97.53,94.22,93.77,97.37]},
-  bs:{
-    '理想燃料·天猫':{rec:[598,821,889,808],sales:[13455,67300,66945,43758],eff:[22.5,81.97,75.3,54.16],
-      sat:[96.67,93.14,94.17,96.11],cvr:[44.5,59.1,56.1,53.4],avg:[15.64,16.26,17.22,16.95]},
-    '理想燃料·抖音':{rec:[205,382,535,394],sales:[7030,32019,31418,16262],eff:[34.3,83.8,58.7,41.3],
-      sat:[100,93.3,100,93.3],cvr:[38.2,51.2,53.9,48.1],avg:[null,null,null,null]},
-    '理想燃料·小红书':{rec:[82,69,79,74],sales:[1494,4233,4088,1814],eff:[18.2,61.4,51.8,24.5],
-      sat:[100,100,100,100],cvr:[30.9,39.8,48.4,29.2],avg:[null,null,null,null]},
-    '理想燃料·拼多多':{rec:[225,398,313,252],sales:[5311,18107,6302,3839],eff:[23.6,45.5,20.1,15.2],
-      sat:[null,null,null,null],cvr:[35.6,44.6,35.1,31.3],avg:[null,null,null,null]},
-    '理想燃料·京东POP':{rec:[73,142,154,103],sales:[1158,8088,7047,3398],eff:[15.9,57.0,45.8,33.0],
-      sat:[100,100,null,100],cvr:[18.8,38.6,41.4,35.3],avg:[15.15,15.75,14.82,15.23]},
-    'IDN·天猫':{rec:[159,278,292,250],sales:[3862,20721,16223,21049],eff:[24.3,74.5,55.6,84.2],
-      sat:[100,100,100,100],cvr:[22.3,27.6,22.1,27.2],avg:[15.02,16.23,14.89,15.59]},
-    'IDN·抖音':{rec:[179,354,276,151],sales:[11479,42359,22164,8974],eff:[64.1,119.7,80.3,59.4],
-      sat:[90,85,66.7,100],cvr:[25.7,32.9,28.4,24.6],avg:[null,null,null,null]},
-    'IDN·小红书':{rec:[124,134,186,132],sales:[7404,12024,11480,12431],eff:[59.7,89.7,61.7,94.2],
-      sat:[100,95,100,96.4],cvr:[14.4,15.3,19.2,15.6],avg:[null,null,null,null]}
-  }
+const defaults = {
+  responsive:true,
+  maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  animation:{duration:600}
 };
 
-const SN=['小柒','蛋宝儿','晚晚','小芽','丸子','花花'];
-const SC=['#2563eb','#dc2626','#059669','#7c3aed','#f59e0b','#94a3b8'];
+// Sidebar active state
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
 
-function mk(id){return document.getElementById(id);}
-function line(id,labels,ds,ex={}){
-  const c=mk(id);if(!c)return;
-  new Chart(c,{type:'line',data:{labels,datasets:ds},options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'top',labels:{boxWidth:9,padding:8,font:{size:10}}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:9}}},
-            y:{grid:{color:'#f1f5f9'},beginAtZero:true,ticks:{font:{size:10}}}},
-    ...ex}});}
-function bar(id,labels,ds,ex={}){
-  const c=mk(id);if(!c)return;
-  new Chart(c,{type:'bar',data:{labels,datasets:ds},options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'top',labels:{boxWidth:9,padding:8,font:{size:10}}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:9}}},
-            y:{grid:{color:'#f1f5f9'},beginAtZero:true,ticks:{font:{size:10}}}},
-    ...ex}});}
-function hbar(id,labels,data,colors,ex={}){
-  const c=mk(id);if(!c)return;
-  new Chart(c,{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:5}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{x:{grid:{color:'#f1f5f9'},beginAtZero:true,ticks:{font:{size:10}}},
-              y:{grid:{display:false},ticks:{font:{size:11}}}},
-      ...ex}});}
-function donut(id,labels,data,colors){
-  const c=mk(id);if(!c)return;
-  new Chart(c,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:9,font:{size:10},padding:6}}}}});}
+// 1. Overview
+new Chart(document.getElementById('c-overview'),{
+  type:'bar',
+  data:{
+    labels:['4月','5月'],
+    datasets:[
+      {label:'接待量',data:[8632,9937],backgroundColor:[BLUE_L,BLUE],yAxisID:'y',borderRadius:4,borderSkipped:false},
+      {label:'销售额(万元)',data:[42.22,58.33],type:'line',borderColor:TEAL,backgroundColor:'transparent',
+       borderDash:[6,3],pointRadius:6,pointBackgroundColor:TEAL,borderWidth:2,yAxisID:'y2'}
+    ]
+  },
+  options:{...defaults,scales:{
+    y:{title:{display:true,text:'接待量',font:{size:11}},grid:{color:'#f3f4f6'}},
+    y2:{position:'right',title:{display:true,text:'销售额（万元）',font:{size:11}},grid:{drawOnChartArea:false}}
+  }}
+});
 
-// ── OVERVIEW ──
-(()=>{
-  const c=mk('c_ov_trend');if(!c)return;
-  new Chart(c,{type:'line',data:{labels:WKS,datasets:[
-    {label:'接待量',data:D.w.rec,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.07)',
-     tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true,yAxisID:'y'},
-    {label:'销售额(¥)',data:D.w.sales,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.07)',
-     tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true,yAxisID:'y1'}
-  ]},options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:9}}},
-      y:{type:'linear',position:'left',grid:{color:'#f1f5f9'},beginAtZero:true,title:{display:true,text:'接待量',font:{size:9}}},
-      y1:{type:'linear',position:'right',grid:{display:false},beginAtZero:true,title:{display:true,text:'销售额(¥)',font:{size:9}}}}}});
-})();
-line('c_ov_eff',WKS,[{label:'整体人效',data:D.w.eff,borderColor:'#7c3aed',
-  backgroundColor:'rgba(124,58,237,0.08)',tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true}],
-  {plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'¥'+v}}}});
-line('c_ov_sat',WKS,[{label:'满意度',data:D.w.sat,borderColor:'#059669',
-  backgroundColor:'rgba(5,150,105,.08)',tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true}],
-  {plugins:{legend:{display:false}},scales:{y:{min:88,max:100,ticks:{callback:v=>v+'%'}}}});
-line('c_ov_resp',WKS,[
-  {label:'首响(s)',data:D.w.first,borderColor:'#3b82f6',tension:.4,pointRadius:4,pointBackgroundColor:WC},
-  {label:'平响(s)',data:D.w.avg,borderColor:'#f59e0b',tension:.4,pointRadius:4,pointBackgroundColor:WC}
-],{scales:{y:{min:8,ticks:{callback:v=>v+'s'}}}});
-donut('c_ov_pie',
-  ['理想燃料','IDN理想营养'],
-  [28448+129747+115799+69072, 22745+75105+49867+42455],
-  ['#2563eb','#7c3aed']);
+// 2. Brand vol
+new Chart(document.getElementById('c-brand-vol'),{
+  type:'bar',
+  data:{
+    labels:['理想燃料','IDN'],
+    datasets:[
+      {label:'4月',data:[6018,2614],backgroundColor:BLUE_L,borderRadius:4,borderSkipped:false},
+      {label:'5月',data:[7134,2803],backgroundColor:[BLUE,PURPLE],borderRadius:4,borderSkipped:false}
+    ]
+  },
+  options:{...defaults,scales:{x:{ticks:{font:{size:11}}},y:{grid:{color:'#f3f4f6'}}}}
+});
 
-// ── BRAND·STORE ──
-bar('c_bs_rec',BS_KEYS,[
-  {label:'周期1',data:BS_KEYS.map(k=>D.bs[k].rec[0]),backgroundColor:'rgba(148,163,184,.85)',borderRadius:3},
-  {label:'周期2',data:BS_KEYS.map(k=>D.bs[k].rec[1]),backgroundColor:'rgba(59,130,246,.85)',borderRadius:3},
-  {label:'周期3',data:BS_KEYS.map(k=>D.bs[k].rec[2]),backgroundColor:'rgba(245,158,11,.85)',borderRadius:3},
-  {label:'周期4',data:BS_KEYS.map(k=>D.bs[k].rec[3]),backgroundColor:'rgba(16,185,129,.85)',borderRadius:3}
-]);
-bar('c_bs_sales',BS_KEYS,[
-  {label:'周期1',data:BS_KEYS.map(k=>D.bs[k].sales[0]),backgroundColor:'rgba(148,163,184,.85)',borderRadius:3},
-  {label:'周期2',data:BS_KEYS.map(k=>D.bs[k].sales[1]),backgroundColor:'rgba(59,130,246,.85)',borderRadius:3},
-  {label:'周期3',data:BS_KEYS.map(k=>D.bs[k].sales[2]),backgroundColor:'rgba(245,158,11,.85)',borderRadius:3},
-  {label:'周期4',data:BS_KEYS.map(k=>D.bs[k].sales[3]),backgroundColor:'rgba(16,185,129,.85)',borderRadius:3}
-]);
-donut('c_bs_pie',BS_KEYS, BS_KEYS.map(k=>D.bs[k].sales.reduce((a,b)=>a+b,0)), BS_COLORS);
-line('c_bs_eff',WKS, BS_KEYS.map((k,i)=>({
-  label:k,data:D.bs[k].eff,borderColor:BS_COLORS[i],tension:.4,pointRadius:3,
-  borderDash:k.startsWith('IDN')?[4,3]:[]})),
-  {scales:{y:{ticks:{callback:v=>'¥'+v}}}});
+// Brand sales
+new Chart(document.getElementById('c-brand-sales'),{
+  type:'bar',
+  data:{
+    labels:['理想燃料','IDN'],
+    datasets:[
+      {label:'4月',data:[23.85,18.36],backgroundColor:BLUE_L,borderRadius:4,borderSkipped:false},
+      {label:'5月',data:[36.40,21.93],backgroundColor:[BLUE,PURPLE],borderRadius:4,borderSkipped:false}
+    ]
+  },
+  options:{...defaults,scales:{x:{ticks:{font:{size:11}}},y:{title:{display:true,text:'万元',font:{size:10}},grid:{color:'#f3f4f6'}}}}
+});
 
-// 满意度（只有有数据的）
-line('c_bs_sat',WKS, BS_KEYS.filter(k=>D.bs[k].sat.some(v=>v!==null)).map((k,i)=>({
-  label:k,data:D.bs[k].sat.map(v=>v===null?NaN:v),
-  borderColor:BS_COLORS[BS_KEYS.indexOf(k)],tension:.4,pointRadius:3,spanGaps:false,
-  borderDash:k.startsWith('IDN')?[4,3]:[]})),
-  {scales:{y:{min:55,max:102,ticks:{callback:v=>v+'%'}}}});
+// Brand KPI compare
+new Chart(document.getElementById('c-brand-kpi'),{
+  type:'bar',
+  data:{
+    labels:['人效(元/次)','满意度(%)','首响(秒)','平响(秒)'],
+    datasets:[
+      {label:'理想燃料',data:[51.0,91.7,11.9,17.2],backgroundColor:BLUE+'bb',borderColor:BLUE,borderWidth:1,borderRadius:3},
+      {label:'IDN',data:[78.3,92.6,11.6,15.9],backgroundColor:PURPLE+'bb',borderColor:PURPLE,borderWidth:1,borderRadius:3}
+    ]
+  },
+  options:{...defaults,scales:{x:{ticks:{font:{size:11}}},y:{beginAtZero:true,grid:{color:'#f3f4f6'}}}}
+});
 
-// 响应（只有天猫和京东POP有数据）
-const RESP_KEYS=['理想燃料·天猫','理想燃料·京东POP','IDN·天猫'];
-bar('c_bs_resp',WKS,[
-  ...RESP_KEYS.map((k,i)=>({label:k,
-    data:D.bs[k].avg,
-    backgroundColor:['rgba(29,78,216,.7)','rgba(191,219,254,.9)','rgba(109,40,217,.7)'][i],
-    borderRadius:4}))
-],{scales:{y:{ticks:{callback:v=>v?v+'s':''}}}});
+// Store labels
+const storeLabels=['理想燃料·天猫','理想燃料·抖音','理想燃料·拼多多','理想燃料·小红书','理想燃料·京东','IDN·抖音','IDN·天猫','IDN·小红书'];
+const storeColors=[BLUE,BLUE,BLUE,BLUE,BLUE,PURPLE,PURPLE,PURPLE];
 
-// ── CVR ──
-line('c_cvr_all',WKS, BS_KEYS.map((k,i)=>({
-  label:k,data:D.bs[k].cvr,borderColor:BS_COLORS[i],tension:.4,pointRadius:3,
-  borderDash:k.startsWith('IDN')?[4,3]:[]})),
-  {scales:{y:{min:10,ticks:{callback:v=>v+'%'}}}});
+// Store vol
+new Chart(document.getElementById('c-store-vol'),{
+  type:'bar',
+  data:{
+    labels:storeLabels,
+    datasets:[
+      {label:'4月',data:[2944,1074,1287,290,423,1100,835,679],backgroundColor:BLUE_L,borderRadius:3,borderSkipped:false},
+      {label:'5月',data:[3385,1636,1247,351,515,1096,1064,643],backgroundColor:storeColors,borderRadius:3,borderSkipped:false}
+    ]
+  },
+  options:{...defaults,indexAxis:'y',
+    scales:{
+      x:{title:{display:true,text:'接待量',font:{size:10}},grid:{color:'#f3f4f6'}},
+      y:{ticks:{font:{size:10.5}}}
+    }
+  }
+});
 
-const BSM=['理想燃料·天猫','理想燃料·抖音','理想燃料·小红书','理想燃料·拼多多','理想燃料·京东POP','IDN·天猫','IDN·抖音','IDN·小红书'];
-bar('c_cvr_bar',BSM,
-  [{label:'月度转化率均值',
-    data:BSM.map(k=>{const v=D.bs[k].cvr;return Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10;}),
-    backgroundColor:BS_COLORS,borderRadius:5}],
-  {plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}});
+// Store sales
+new Chart(document.getElementById('c-store-sales'),{
+  type:'bar',
+  data:{
+    labels:storeLabels,
+    datasets:[
+      {label:'4月',data:[14.60,3.56,2.94,0.95,1.82,7.50,4.42,6.44],backgroundColor:BLUE_L,borderRadius:3,borderSkipped:false},
+      {label:'5月',data:[20.22,8.91,3.74,1.38,2.15,9.97,6.96,5.01],backgroundColor:storeColors,borderRadius:3,borderSkipped:false}
+    ]
+  },
+  options:{...defaults,indexAxis:'y',
+    scales:{
+      x:{title:{display:true,text:'销售额（万元）',font:{size:10}},grid:{color:'#f3f4f6'}},
+      y:{ticks:{font:{size:10.5}}}
+    }
+  }
+});
 
-const LF_KEYS=['理想燃料·天猫','理想燃料·抖音','理想燃料·小红书','理想燃料·拼多多','理想燃料·京东POP'];
-const LF_COLORS=['#1d4ed8','#3b82f6','#60a5fa','#93c5fd','#bfdbfe'];
-line('c_cvr_lf',WKS, LF_KEYS.map((k,i)=>({
-  label:k.replace('理想燃料·',''),data:D.bs[k].cvr,borderColor:LF_COLORS[i],tension:.4,pointRadius:4})),
-  {scales:{y:{min:15,ticks:{callback:v=>v+'%'}}}});
+// Agent main
+const agents=['蛋宝儿','小柒','晚晚','小芽','丸子','花花'];
+const agVol=[2189,2148,2062,1812,1431,295];
+const agSales=[13.13,12.87,11.17,9.39,10.08,1.70];
 
-const IDN_KEYS=['IDN·天猫','IDN·抖音','IDN·小红书'];
-const IDN_COLORS=['#6d28d9','#8b5cf6','#c4b5fd'];
-line('c_cvr_idn',WKS, IDN_KEYS.map((k,i)=>({
-  label:k.replace('IDN·','IDN '),data:D.bs[k].cvr,borderColor:IDN_COLORS[i],
-  backgroundColor:IDN_COLORS[i]+'18',fill:true,tension:.4,pointRadius:4})),
-  {scales:{y:{min:10,ticks:{callback:v=>v+'%'}}}});
+new Chart(document.getElementById('c-agent-main'),{
+  type:'bar',
+  data:{
+    labels:agents,
+    datasets:[
+      {label:'接待量',data:agVol,backgroundColor:BLUE+'cc',borderRadius:4,borderSkipped:false,yAxisID:'y'},
+      {label:'销售额(万元)',data:agSales,type:'line',borderColor:AMBER,backgroundColor:'transparent',
+       pointRadius:6,pointBackgroundColor:AMBER,borderWidth:2.5,yAxisID:'y2'}
+    ]
+  },
+  options:{...defaults,scales:{
+    y:{title:{display:true,text:'接待量',font:{size:10}},grid:{color:'#f3f4f6'}},
+    y2:{position:'right',title:{display:true,text:'销售额（万元）',font:{size:10}},grid:{drawOnChartArea:false}}
+  }}
+});
 
-// ── STAFF RANKINGS ──
-hbar('c_rk_rec',['小柒','蛋宝儿','晚晚','小芽','丸子','花花'],[2027,2014,1840,1685,1347,198],SC);
-hbar('c_rk_sales',['蛋宝儿','小柒','晚晚','小芽','丸子','花花'],
-  [120169,119012,98542,89303,96786,9426],['#dc2626','#2563eb','#059669','#7c3aed','#f59e0b','#94a3b8']);
-hbar('c_rk_eff',['丸子','蛋宝儿','小柒','晚晚','小芽','花花'],
-  [71.9,59.7,58.7,53.6,53.0,47.6],['#f59e0b','#dc2626','#2563eb','#059669','#7c3aed','#94a3b8'],
-  {scales:{x:{ticks:{callback:v=>'¥'+v}}}});
-hbar('c_rk_resp',['小芽','小柒','晚晚','蛋宝儿','丸子','花花'],
-  [12.4,13.9,16.1,20.7,21.0,23.7],['#7c3aed','#2563eb','#059669','#dc2626','#f59e0b','#94a3b8'],
-  {scales:{x:{ticks:{callback:v=>v+'s'}}}});
+// Scatter
+new Chart(document.getElementById('c-scatter'),{
+  type:'bubble',
+  data:{
+    datasets:[{
+      label:'客服',
+      data:[
+        {x:20.7,y:93.4,r:14},{x:13.9,y:94.4,r:13},{x:16.5,y:93.1,r:12},
+        {x:12.2,y:85.4,r:11},{x:21.1,y:95.2,r:9},{x:22.0,y:91.7,r:5}
+      ],
+      backgroundColor:[BLUE+'aa',TEAL+'aa',AMBER+'aa',RED+'aa',PURPLE+'aa',GRAY+'aa'],
+      borderWidth:0
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,animation:{duration:600},
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:(ctx)=>{
+          const names=['蛋宝儿','小柒','晚晚','小芽','丸子','花花'];
+          return `${names[ctx.dataIndex]}  平响${ctx.raw.x}s  满意度${ctx.raw.y}%`;
+        }
+      }}
+    },
+    scales:{
+      x:{title:{display:true,text:'平均响应时间（秒）',font:{size:11}},min:8,max:26,grid:{color:'#f3f4f6'}},
+      y:{title:{display:true,text:'满意度（%）',font:{size:11}},min:80,max:100,grid:{color:'#f3f4f6'}}
+    }
+  }
+});
 
-// ── W3 ──
-(()=>{
-  const c=mk('c_w3_main');if(!c)return;
-  new Chart(c,{type:'line',data:{labels:WKS,datasets:[
-    {label:'接待量',data:D.w.rec,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.07)',
-     tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true,yAxisID:'y'},
-    {label:'销售额(¥)',data:D.w.sales,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.07)',
-     tension:.4,pointRadius:5,pointBackgroundColor:WC,fill:true,yAxisID:'y1'}
-  ]},options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},
-    scales:{x:{grid:{display:false}},
-      y:{type:'linear',position:'left',grid:{color:'#f1f5f9'},beginAtZero:true},
-      y1:{type:'linear',position:'right',grid:{display:false},beginAtZero:true}}}});
-})();
-bar('c_w3_bs_sales',BS_KEYS,[
-  {label:'周期2',data:BS_KEYS.map(k=>D.bs[k].sales[1]),backgroundColor:'rgba(59,130,246,.8)',borderRadius:4},
-  {label:'周期3',data:BS_KEYS.map(k=>D.bs[k].sales[2]),backgroundColor:'rgba(245,158,11,.85)',borderRadius:4}
-]);
-line('c_w3_eff',WKS, BS_KEYS.map((k,i)=>({
-  label:k,data:D.bs[k].eff,borderColor:BS_COLORS[i],tension:.4,pointRadius:3,
-  borderDash:k.startsWith('IDN')?[4,3]:[]})),
-  {scales:{y:{ticks:{callback:v=>'¥'+v}}}});
+// Sat compare
+const agSat4=[null,93.0,94.8,95.2,91.0,null];
+const agSat5=[93.4,94.4,85.4,93.1,95.2,91.7];
+new Chart(document.getElementById('c-sat-compare'),{
+  type:'bar',
+  data:{
+    labels:['蛋宝儿','小柒','小芽','晚晚','丸子','花花'],
+    datasets:[
+      {label:'4月',data:[null,93.0,94.8,95.2,91.0,null],backgroundColor:BLUE_L,borderRadius:3,borderSkipped:false},
+      {label:'5月',data:[93.4,94.4,85.4,93.1,95.2,91.7],backgroundColor:[BLUE,BLUE,RED,BLUE,PURPLE,GRAY],borderRadius:3,borderSkipped:false}
+    ]
+  },
+  options:{...defaults,
+    scales:{
+      x:{ticks:{font:{size:11}}},
+      y:{min:75,max:100,title:{display:true,text:'满意度（%）',font:{size:10}},grid:{color:'#f3f4f6'}}
+    }
+  }
+});
 
-(()=>{
-  const c=mk('c_w3_idn');if(!c)return;
-  new Chart(c,{type:'bar',data:{labels:WKS,datasets:[
-    {label:'IDN·天猫接待',data:D.bs['IDN·天猫'].rec,backgroundColor:'rgba(109,40,217,.7)',borderRadius:4,yAxisID:'y'},
-    {label:'IDN·抖音接待',data:D.bs['IDN·抖音'].rec,backgroundColor:'rgba(139,92,246,.7)',borderRadius:4,yAxisID:'y'},
-    {label:'IDN·天猫销售',data:D.bs['IDN·天猫'].sales,type:'line',borderColor:'#6d28d9',
-     tension:.4,pointRadius:4,fill:false,yAxisID:'y1'},
-    {label:'IDN·抖音销售',data:D.bs['IDN·抖音'].sales,type:'line',borderColor:'#8b5cf6',
-     tension:.4,pointRadius:4,fill:false,borderDash:[4,3],yAxisID:'y1'}
-  ]},options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},
-    scales:{x:{grid:{display:false}},
-      y:{type:'linear',position:'left',grid:{color:'#f1f5f9'},beginAtZero:true,title:{display:true,text:'接待量',font:{size:9}}},
-      y1:{type:'linear',position:'right',grid:{display:false},beginAtZero:true,title:{display:true,text:'销售额',font:{size:9}}}}}});
-})();
-
-// ── NAV ──
-function gp(id,el){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
-  el.classList.add('on');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+// Scrollspy
+const sections=document.querySelectorAll('section[id]');
+const navItems=document.querySelectorAll('.nav-item[href^="#"]');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      navItems.forEach(n=>n.classList.remove('active'));
+      const active=document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+      if(active)active.classList.add('active');
+    }
+  });
+},{threshold:.3});
+sections.forEach(s=>observer.observe(s));
 </script>
 </body>
 </html>
