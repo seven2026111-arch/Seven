@@ -3,772 +3,679 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>电商客服周报 · 05.23 - 06.19</title>
+<title>电商客服周报 · 周期1-4 (05.30-06.26)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2d3250;
-    --text: #e8eaf0;
-    --muted: #8890a8;
-    --accent: #4f7dff;
-    --fuel-1: #4f7dff;
-    --fuel-2: #7ba3ff;
-    --idn-1: #a855f7;
-    --idn-2: #c084fc;
-    --green: #22d3a4;
-    --red: #ff5e74;
-    --yellow: #fbbf24;
-    --font: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --border:#2a3340;
+    --text:#e6edf3; --sub:#8b96a5; --accent:#3b82f6;
+    --rl-1:#3b82f6; --rl-2:#60a5fa; --rl-3:#93c5fd;
+    --idn-1:#a855f7; --idn-2:#c084fc; --idn-3:#d8b4fe;
+    --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(15,17,23,0.92); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 0; padding: 0 24px;
-    height: 52px;
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
   }
-  .nav-logo { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .05em; margin-right: 32px; white-space: nowrap; }
-  .nav-tabs { display: flex; gap: 2px; flex: 1; }
-  .nav-tab {
-    padding: 6px 16px; border-radius: 6px; cursor: pointer;
-    font-size: 13px; color: var(--muted); border: none; background: none;
-    transition: all .15s; white-space: nowrap;
+  .navbar{
+    position:fixed; top:0; left:0; right:0; height:60px; z-index:100;
+    background:rgba(13,17,23,0.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; padding:0 24px; gap:6px;
+    overflow-x:auto;
   }
-  .nav-tab:hover { color: var(--text); background: var(--surface2); }
-  .nav-tab.active { color: #fff; background: var(--accent); }
-  .nav-period { font-size: 12px; color: var(--muted); margin-left: auto; white-space: nowrap; }
-
-  /* LAYOUT */
-  .page { display: none; padding: 72px 24px 40px; max-width: 1280px; margin: 0 auto; }
-  .page.active { display: block; }
-
-  /* SECTION */
-  .section-title {
-    font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 16px; margin-top: 32px;
-    display: flex; align-items: center; gap: 8px;
+  .navbar .logo{font-weight:700; font-size:15px; margin-right:20px; white-space:nowrap; color:var(--text);}
+  .nav-btn{
+    background:transparent; border:none; color:var(--sub); font-size:14px;
+    padding:8px 14px; border-radius:8px; cursor:pointer; white-space:nowrap;
+    transition:all .2s;
   }
-  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* KPI CARDS */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 8px; }
-  .kpi-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 18px 20px; position: relative; overflow: hidden;
-  }
-  .kpi-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: var(--accent);
-  }
-  .kpi-card.purple::before { background: var(--idn-1); }
-  .kpi-card.green::before { background: var(--green); }
-  .kpi-card.yellow::before { background: var(--yellow); }
-  .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .kpi-value { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -.02em; }
-  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .kpi-delta { font-size: 12px; font-weight: 600; margin-top: 4px; }
-  .kpi-delta.up { color: var(--green); }
-  .kpi-delta.down { color: var(--red); }
-
-  /* CHART CONTAINER */
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-  .chart-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 20px; position: relative;
-  }
-  .chart-box.full { grid-column: 1 / -1; }
-  .chart-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
-  .chart-sub { font-size: 11px; color: var(--muted); margin-top: -12px; margin-bottom: 12px; }
-  .chart-wrap { position: relative; height: 240px; }
-  .chart-wrap.tall { height: 300px; }
-  .chart-wrap.short { height: 180px; }
-
-  /* PERIOD BADGE */
-  .period-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-  .period-badge {
-    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
-    border: 1px solid var(--border); color: var(--muted); cursor: pointer;
-  }
-  .period-badge.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  /* TABLE */
-  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .data-table th {
-    text-align: left; padding: 10px 14px; background: var(--surface2);
-    color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: .05em; white-space: nowrap;
-  }
-  .data-table td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
-  .data-table tr:hover td { background: var(--surface2); }
-  .rank-badge {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; border-radius: 6px; font-size: 12px; font-weight: 700;
-    background: var(--surface2); color: var(--muted);
-  }
-  .rank-badge.gold { background: #3d2f00; color: var(--yellow); }
-  .rank-badge.silver { background: #222; color: #aaa; }
-  .rank-badge.bronze { background: #2a1700; color: #cd7f32; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-  .tag.new { background: rgba(168,85,247,.15); color: var(--idn-1); }
-  .tag.lead { background: rgba(79,125,255,.15); color: var(--accent); }
-  .tag.warn { background: rgba(255,94,116,.1); color: var(--red); }
-  .tag.ok { background: rgba(34,211,164,.1); color: var(--green); }
-
-  /* ALERT */
-  .alert {
-    border-radius: 8px; padding: 12px 16px; margin-bottom: 12px;
-    display: flex; gap: 10px; align-items: flex-start; font-size: 13px;
-  }
-  .alert.warn { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.25); }
-  .alert.info { background: rgba(79,125,255,.08); border: 1px solid rgba(79,125,255,.2); }
-  .alert.danger { background: rgba(255,94,116,.08); border: 1px solid rgba(255,94,116,.2); }
-  .alert .icon { font-size: 16px; margin-top: 1px; }
-  .alert strong { font-weight: 700; display: block; margin-bottom: 2px; }
-
-  /* BRAND COMPARE */
-  .brand-pill {
-    display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
-    border-radius: 20px; font-size: 12px; font-weight: 600;
-  }
-  .brand-pill.fuel { background: rgba(79,125,255,.15); color: var(--fuel-1); }
-  .brand-pill.idn { background: rgba(168,85,247,.15); color: var(--idn-1); }
-  .brand-dot { width: 7px; height: 7px; border-radius: 50%; }
-  .brand-dot.fuel { background: var(--fuel-1); }
-  .brand-dot.idn { background: var(--idn-1); }
-
-  /* INSIGHT */
-  .insight-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .insight-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 18px;
-  }
-  .insight-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-  .insight-card p { font-size: 12px; color: var(--muted); line-height: 1.7; }
-
-  /* RECOMMEND */
-  .rec-list { display: grid; gap: 12px; }
-  .rec-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;
-  }
-  .rec-num {
-    width: 32px; height: 32px; border-radius: 8px; background: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; flex-shrink: 0; color: #fff;
-  }
-  .rec-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-  .rec-body p { font-size: 13px; color: var(--muted); line-height: 1.7; }
-
-  /* FOOTER */
-  footer {
-    text-align: center; padding: 32px 24px; color: var(--muted); font-size: 12px;
-    border-top: 1px solid var(--border); margin-top: 40px;
-  }
-  @media (max-width: 768px) {
-    .chart-grid, .chart-grid-3, .insight-grid { grid-template-columns: 1fr; }
-    .chart-box.full { grid-column: 1; }
-    nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 4px; }
-    .nav-tabs { flex-wrap: wrap; }
-    .page { padding: 100px 12px 40px; }
-  }
+  .nav-btn:hover{background:var(--bg3); color:var(--text);}
+  .nav-btn.active{background:var(--accent); color:white;}
+  .container{max-width:1280px; margin:0 auto; padding:84px 24px 60px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  h1{font-size:24px; margin-bottom:4px;}
+  h2{font-size:19px; margin:28px 0 14px; padding-top:6px; border-top:1px solid var(--border); padding-top:20px;}
+  h2:first-of-type{border-top:none; padding-top:0;}
+  h3{font-size:15px; margin:18px 0 10px; color:var(--sub); font-weight:600;}
+  .subtitle{color:var(--sub); font-size:13px; margin-bottom:24px;}
+  .card{background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:16px;}
+  .grid{display:grid; gap:14px;}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  @media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-2{grid-template-columns:1fr;}}
+  .kpi{background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:18px;}
+  .kpi .label{font-size:12px; color:var(--sub); margin-bottom:8px;}
+  .kpi .value{font-size:24px; font-weight:700;}
+  .kpi .delta{font-size:12px; margin-top:6px;}
+  .delta.up{color:var(--good);} .delta.down{color:var(--bad);} .delta.flat{color:var(--sub);}
+  .chart-box{position:relative; height:300px;}
+  .chart-box.tall{height:380px;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{padding:9px 10px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;}
+  th{color:var(--sub); font-weight:600; font-size:12px;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .tag{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600;}
+  .tag.rl{background:rgba(59,130,246,0.15); color:var(--rl-2);}
+  .tag.idn{background:rgba(168,85,247,0.15); color:var(--idn-2);}
+  .badge{display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600;}
+  .badge.good{background:rgba(34,197,94,0.12); color:var(--good);}
+  .badge.warn{background:rgba(245,158,11,0.12); color:var(--warn);}
+  .badge.bad{background:rgba(239,68,68,0.12); color:var(--bad);}
+  .note{background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:12px 16px; font-size:13px; color:#fbbf24; margin:14px 0;}
+  .note.info{background:rgba(59,130,246,0.08); border-color:rgba(59,130,246,0.3); color:#93c5fd;}
+  .note b{color:inherit;}
+  ul.bullets{padding-left:18px; font-size:14px;}
+  ul.bullets li{margin-bottom:8px;}
+  .rank-list{display:flex; flex-direction:column; gap:8px;}
+  .rank-item{display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--bg3); border-radius:10px;}
+  .rank-num{width:24px; height:24px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+  .rank-num.r1{background:#f59e0b; color:#000;}
+  .rank-num.r2{background:#9ca3af; color:#000;}
+  .rank-num.r3{background:#b45309; color:#fff;}
+  .rank-name{flex:1; font-size:13px; font-weight:600;}
+  .rank-bar-wrap{flex:2; height:8px; background:var(--border); border-radius:4px; overflow:hidden;}
+  .rank-bar{height:100%; background:linear-gradient(90deg,var(--accent),#60a5fa); border-radius:4px;}
+  .rank-val{font-size:12px; color:var(--sub); width:70px; text-align:right; flex-shrink:0;}
+  .two-col{display:grid; grid-template-columns:1.3fr 1fr; gap:16px;}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+  .conclusion-card{border-left:3px solid var(--accent);}
+  .footer-note{color:var(--sub); font-size:12px; text-align:center; margin-top:40px;}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">📊 客服周报</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('overview')">总体概览</button>
-    <button class="nav-tab" onclick="showPage('brand')">品牌分析</button>
-    <button class="nav-tab" onclick="showPage('store')">店铺维度</button>
-    <button class="nav-tab" onclick="showPage('agent')">客服表现</button>
-    <button class="nav-tab" onclick="showPage('conclude')">结论建议</button>
+<div class="navbar">
+  <span class="logo">📊 电商客服周报</span>
+  <button class="nav-btn active" data-tab="overview">总体概览</button>
+  <button class="nav-btn" data-tab="brand-trend">品牌环比</button>
+  <button class="nav-btn" data-tab="brand-compare">品牌横向对比</button>
+  <button class="nav-btn" data-tab="store">店铺维度</button>
+  <button class="nav-btn" data-tab="agent">客服表现</button>
+  <button class="nav-btn" data-tab="conclusion">结论建议</button>
+</div>
+
+<div class="container">
+
+<!-- ========== 1. 总体概览 ========== -->
+<section id="overview" class="tab-panel active">
+  <h1>电商客服周报</h1>
+  <div class="subtitle">统计周期：周期1 (05.30-06.05) ～ 周期4 (06.20-06.26，本周) ｜ 品牌：理想燃料 · IDN理想营养 ｜ 数据来源：周数据汇总6_30.xlsx · 电商分页</div>
+
+  <div class="grid grid-4" id="kpi-cards"></div>
+
+  <h2>接待量与销售额走势（周期1-4）</h2>
+  <div class="card"><div class="chart-box tall"><canvas id="chartOverallTrend"></canvas></div></div>
+
+  <h2>服务指标走势（首响 / 平响 / 满意度）</h2>
+  <div class="card"><div class="chart-box tall"><canvas id="chartServiceTrend"></canvas></div></div>
+
+  <div class="note">
+    <b>本周（周期4，06.20-06.26）速览：</b><span id="weekSummaryText"></span>
   </div>
-  <div class="nav-period">周期1–4 · 05.23 – 06.19</div>
-</nav>
+</section>
 
-<!-- ========== PAGE 1: 总体概览 ========== -->
-<div id="page-overview" class="page active">
+<!-- ========== 2. 品牌环比分析 ========== -->
+<section id="brand-trend" class="tab-panel">
+  <h1>品牌环比分析</h1>
+  <div class="subtitle">分别观察理想燃料、IDN理想营养在周期1-4的接待量、销售额及服务指标变化</div>
 
-  <div class="section-title">总体概览</div>
+  <h2><span class="tag rl">理想燃料</span> 接待量 / 销售额环比</h2>
+  <div class="card"><div class="chart-box"><canvas id="chartRLTrend"></canvas></div></div>
+  <div class="card" id="rlTable"></div>
 
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-label">四周累计接待量</div>
-      <div class="kpi-value">8,621</div>
-      <div class="kpi-sub">理想燃料 5,972 · IDN 2,649</div>
-    </div>
-    <div class="kpi-card purple">
-      <div class="kpi-label">四周累计销售额</div>
-      <div class="kpi-value">¥473,205</div>
-      <div class="kpi-sub">含两品牌全平台净销售额</div>
-    </div>
-    <div class="kpi-card green">
-      <div class="kpi-label">周期4 销售额（最高周）</div>
-      <div class="kpi-value">¥141,818</div>
-      <div class="kpi-sub kpi-delta up">↑ 21.7% 环比周期3</div>
-    </div>
-    <div class="kpi-card yellow">
-      <div class="kpi-label">参与活动说明</div>
-      <div class="kpi-value" style="font-size:14px;line-height:1.5;margin-top:4px;">5月13日起大促持续至6月21日</div>
-      <div class="kpi-sub">全部4个分析周期均处于活动期</div>
-    </div>
+  <h2><span class="tag idn">IDN理想营养</span> 接待量 / 销售额环比</h2>
+  <div class="card"><div class="chart-box"><canvas id="chartIDNTrend"></canvas></div></div>
+  <div class="card" id="idnTable"></div>
+
+  <h2>服务指标环比（满意度）</h2>
+  <div class="card"><div class="chart-box"><canvas id="chartSatisTrend"></canvas></div></div>
+
+  <div id="brandTrendAnalysis"></div>
+</section>
+
+<!-- ========== 3. 品牌横向对比 ========== -->
+<section id="brand-compare" class="tab-panel">
+  <h1>品牌横向对比</h1>
+  <div class="subtitle">理想燃料 vs IDN理想营养，四周期累计数据对比</div>
+
+  <div class="two-col">
+    <div class="card"><div class="chart-box"><canvas id="chartBrandCompareBar"></canvas></div></div>
+    <div class="card" id="brandCompareTable"></div>
   </div>
 
-  <div class="section-title">各周期接待与销售总览</div>
+  <h2>品牌特点总结</h2>
+  <div id="brandCompareAnalysis"></div>
+</section>
 
-  <div class="chart-grid">
-    <div class="chart-box">
-      <div class="chart-title">接待量趋势（全团队）</div>
-      <div class="chart-wrap"><canvas id="c-overview-vol"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">销售额趋势（全品牌）</div>
-      <div class="chart-wrap"><canvas id="c-overview-sales"></canvas></div>
-    </div>
-  </div>
+<!-- ========== 4. 店铺维度分析 ========== -->
+<section id="store" class="tab-panel">
+  <h1>店铺维度分析</h1>
+  <div class="subtitle">按 品牌·店铺 颗粒度统计，共 8 个品牌店铺组合</div>
 
-  <div class="section-title">活动背景说明</div>
-  <div class="alert info">
-    <span class="icon">📌</span>
-    <div><strong>大促背景（5月13日 – 6月21日）</strong>
-    本次分析的4个周期（05.23–06.19）均完整处于理想燃料 &amp; IDN 双品牌大促活动期内。销售额从周期1至周期4呈现明显增长趋势（¥111,527 → ¥141,818），是活动深度发力、用户转化率提升的综合体现，并非简单的自然增长。</div>
+  <h2>各店铺累计接待量 / 销售额</h2>
+  <div class="card"><div class="chart-box tall"><canvas id="chartStoreTotal"></canvas></div></div>
+
+  <h2>各店铺周期走势</h2>
+  <div class="card"><div class="chart-box tall"><canvas id="chartStoreTrend"></canvas></div></div>
+
+  <h2>店铺数据明细</h2>
+  <div class="card" id="storeTable"></div>
+
+  <div id="storeAnalysis"></div>
+</section>
+
+<!-- ========== 5. 客服个人表现 ========== -->
+<section id="agent" class="tab-panel">
+  <h1>客服个人表现与排名</h1>
+  <div class="subtitle">共6名客服（花花为5月新人，计入团队汇总，排名暂不参与横向对比）｜ 丸子为组长，需结合管理职责综合解读</div>
+
+  <h2>核心指标明细</h2>
+  <div class="card" id="agentTable"></div>
+
+  <h2>各项排名（不含花花）</h2>
+  <div class="grid grid-2">
+    <div class="card"><h3>接待量排名</h3><div class="rank-list" id="rankReception"></div></div>
+    <div class="card"><h3>销售额排名</h3><div class="rank-list" id="rankSales"></div></div>
+    <div class="card"><h3>人效排名（元/接待）</h3><div class="rank-list" id="rankEfficiency"></div></div>
+    <div class="card"><h3>满意度排名</h3><div class="rank-list" id="rankSatis"></div></div>
   </div>
-  <div class="alert warn">
-    <span class="icon">⚠️</span>
-    <div><strong>数据异常标注</strong>
-    周期3中丸子（呦呦）在理想燃料·拼多多的平均响应时长为128秒，远超团队正常水平（15–25秒区间），疑为系统记录异常或特殊接待情境，建议核实原始数据。本报告中该值已保留但不纳入个人响应效率排名的代表性评价。</div>
+  <div class="card" style="margin-top:14px;"><h3>响应效率排名（平响，越低越好）</h3><div class="rank-list" id="rankResp"></div></div>
+
+  <h2>响应速度 vs 满意度关系</h2>
+  <div class="card"><div class="chart-box"><canvas id="chartRespVsSatis"></canvas></div></div>
+  <div id="respSatisAnalysis"></div>
+
+  <h2>客服周期走势</h2>
+  <div class="card"><div class="chart-box tall"><canvas id="chartAgentTrend"></canvas></div></div>
+
+  <div class="note">
+    <b>异常提示：</b>丸子在拼多多店铺的平均响应时长在周期2（06.06-06.12）达到 128 秒，显著高于其自身在其他周期（8~26秒）及团队平均水平，疑似数据口径/录入异常或个例事件，建议核实原始会话记录，而非直接计入常规绩效评估。
   </div>
+</section>
+
+<!-- ========== 6 & 7. 结论与建议 ========== -->
+<section id="conclusion" class="tab-panel">
+  <h1>主要结论与运营建议</h1>
+
+  <h2>核心结论</h2>
+  <div id="mainConclusions"></div>
+
+  <h2>客服团队管理与运营优化建议</h2>
+  <div id="recommendations"></div>
+
+  <div class="footer-note">本报告由 Claude 基于「周数据汇总6_30.xlsx · 电商分页」原始数据自动清洗与生成 · 数据口径：接待量=会话量，销售额=净销售额（已按平台预处理），满意度为接待量加权平均（剔除0值异常样本），响应时长已统一解析为秒</div>
+</section>
 
 </div>
 
-<!-- ========== PAGE 2: 品牌分析 ========== -->
-<div id="page-brand" class="page">
-
-  <div class="section-title">品牌环比分析</div>
-
-  <div class="chart-grid">
-    <div class="chart-box">
-      <div class="chart-title">理想燃料 · 接待量趋势</div>
-      <div class="chart-wrap"><canvas id="c-fuel-vol"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">理想燃料 · 销售额趋势</div>
-      <div class="chart-wrap"><canvas id="c-fuel-sales"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">IDN · 接待量趋势</div>
-      <div class="chart-wrap"><canvas id="c-idn-vol"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">IDN · 销售额趋势</div>
-      <div class="chart-wrap"><canvas id="c-idn-sales"></canvas></div>
-    </div>
-  </div>
-
-  <div class="section-title">品牌服务指标对比</div>
-  <div class="chart-grid">
-    <div class="chart-box">
-      <div class="chart-title">满意度对比（各周期）</div>
-      <div class="chart-wrap"><canvas id="c-brand-sat"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">平均响应时长对比（秒）</div>
-      <div class="chart-wrap"><canvas id="c-brand-resp"></canvas></div>
-    </div>
-  </div>
-
-  <div class="section-title">品牌横向对比快照</div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>维度</th>
-          <th><span class="brand-pill fuel"><span class="brand-dot fuel"></span>理想燃料</span></th>
-          <th><span class="brand-pill idn"><span class="brand-dot idn"></span>IDN 理想营养</span></th>
-          <th>差异分析</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>平台覆盖</td><td>天猫/抖音/小红书/拼多多/京东POP（5店）</td><td>天猫/抖音/小红书（3店）</td><td>理想燃料规模更大</td></tr>
-        <tr><td>四周接待量</td><td>5,972</td><td>2,649</td><td>理想燃料是IDN的 <strong>2.25倍</strong></td></tr>
-        <tr><td>四周销售额</td><td>¥271,197</td><td>¥201,950</td><td>IDN人均销售效率更高</td></tr>
-        <tr><td>人效（销售额/接待）</td><td>¥45.4/次</td><td>¥76.2/次</td><td>IDN单次接待价值更高 ↑68%</td></tr>
-        <tr><td>周期4满意度</td><td>77.6%</td><td>86.5%</td><td>IDN满意度更稳定</td></tr>
-        <tr><td>周期3平响</td><td>19.3秒</td><td>20.9秒</td><td>周期3双品牌出现异常拉升</td></tr>
-        <tr><td>销售额最高周期</td><td>周期4 ¥88,092</td><td>周期3 ¥61,198</td><td>两品牌爆发节奏不同步</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="section-title">关键发现</div>
-  <div class="alert info">
-    <span class="icon">💡</span>
-    <div><strong>IDN 单次接待价值更高</strong>
-    IDN 保税仓发货的海外产品，客单价相对较高，单次接待销售额约为理想燃料的1.68倍。理想燃料依靠更大接待规模支撑整体销量，两品牌呈现"量大低单价"与"量少高单价"的典型分工。</div>
-  </div>
-  <div class="alert warn">
-    <span class="icon">🔔</span>
-    <div><strong>周期4 理想燃料满意度下滑至77.6%</strong>
-    周期4（06.13-06.19）大促尾声阶段，理想燃料满意度从周期2的96.9%大幅下滑。建议排查是否与活动尾期咨询激增、客服压力上升有关，同时关注是否有特定店铺或客服是主要拉低因素。</div>
-  </div>
-
-</div>
-
-<!-- ========== PAGE 3: 店铺维度 ========== -->
-<div id="page-store" class="page">
-
-  <div class="section-title">店铺接待量对比（各周期）</div>
-
-  <div class="chart-box" style="margin-bottom:16px;">
-    <div class="chart-title">各店铺接待量 · 分周期堆叠</div>
-    <div class="chart-wrap tall"><canvas id="c-store-vol"></canvas></div>
-  </div>
-
-  <div class="chart-box" style="margin-bottom:16px;">
-    <div class="chart-title">各店铺销售额 · 分周期对比</div>
-    <div class="chart-wrap tall"><canvas id="c-store-sales"></canvas></div>
-  </div>
-
-  <div class="section-title">店铺数据明细</div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-    <table class="data-table">
-      <thead>
-        <tr><th>店铺</th><th>周期1接待</th><th>周期2接待</th><th>周期3接待</th><th>周期4接待</th><th>四周总销售额</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="brand-pill fuel">理想燃料·天猫</span></td>
-          <td>808</td><td>724</td><td>648</td><td>687</td>
-          <td><strong>¥166,798</strong></td>
-          <td><span class="tag ok">销售额第一</span></td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill idn">IDN·抖音</span></td>
-          <td>151</td><td>323</td><td>324</td><td>301</td>
-          <td><strong>¥84,227</strong></td>
-          <td><span class="tag ok">增速显著</span></td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill fuel">理想燃料·抖音</span></td>
-          <td>394</td><td>325</td><td>337</td><td>327</td>
-          <td><strong>¥57,600</strong></td>
-          <td>销售额排名第三</td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill idn">IDN·天猫</span></td>
-          <td>250</td><td>222</td><td>203</td><td>276</td>
-          <td><strong>¥68,983</strong></td>
-          <td>周期4回升</td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill idn">IDN·小红书</span></td>
-          <td>132</td><td>160</td><td>171</td><td>136</td>
-          <td><strong>¥48,305</strong></td>
-          <td>周期3最高</td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill fuel">理想燃料·拼多多</span></td>
-          <td>274</td><td>260</td><td>213</td><td>285</td>
-          <td><strong>¥21,219</strong></td>
-          <td>周期4销售回升</td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill fuel">理想燃料·京东POP</span></td>
-          <td>103</td><td>102</td><td>96</td><td>91</td>
-          <td><strong>¥14,460</strong></td>
-          <td>最稳定 但销售偏低</td>
-        </tr>
-        <tr>
-          <td><span class="brand-pill fuel">理想燃料·小红书</span></td>
-          <td>74</td><td>76</td><td>88</td><td>60</td>
-          <td><strong>¥11,613</strong></td>
-          <td>接待量最小</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="section-title">关键店铺观察</div>
-  <div class="insight-grid">
-    <div class="insight-card">
-      <h4>🏆 理想燃料·天猫</h4>
-      <p>全平台接待量最高（2,867次），销售贡献¥166,798，占全平台销售额35%。是核心战场，需优先保障人力配置与服务质量。</p>
-    </div>
-    <div class="insight-card">
-      <h4>📈 IDN·抖音 快速增长</h4>
-      <p>周期1仅151次接待，周期2直接跃升至323次（+114%），并持续维持高位。大促活动在抖音平台对IDN的带动效应显著，销售额四周累计¥84,227。</p>
-    </div>
-    <div class="insight-card">
-      <h4>⚡ 理想燃料·拼多多</h4>
-      <p>周期4接待量285次为四周最高，销售额同步回升至¥8,080，显示大促后期拼多多平台活跃度升温，需注意响应时效保障。</p>
-    </div>
-  </div>
-
-</div>
-
-<!-- ========== PAGE 4: 客服表现 ========== -->
-<div id="page-agent" class="page">
-
-  <div class="section-title">客服综合表现（四周汇总）</div>
-
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>#</th><th>客服</th><th>接待量</th><th>销售额</th>
-          <th>人效(元/次)</th><th>满意度</th><th>首响(秒)</th><th>平响(秒)</th><th>备注</th>
-        </tr>
-      </thead>
-      <tbody id="agent-table-body"></tbody>
-    </table>
-  </div>
-
-  <div class="section-title">各维度排名</div>
-  <div class="chart-grid">
-    <div class="chart-box">
-      <div class="chart-title">接待量排名</div>
-      <div class="chart-wrap"><canvas id="c-rank-vol"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">销售额排名</div>
-      <div class="chart-wrap"><canvas id="c-rank-sales"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">人效排名（元/次）</div>
-      <div class="chart-wrap"><canvas id="c-rank-eff"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">响应效率排名（平响越低越好）</div>
-      <div class="chart-wrap"><canvas id="c-rank-resp"></canvas></div>
-    </div>
-  </div>
-
-  <div class="section-title">客服周期接待量趋势</div>
-  <div class="chart-box">
-    <div class="chart-title">各客服接待量 · 分周期对比</div>
-    <div class="chart-wrap tall"><canvas id="c-agent-trend"></canvas></div>
-  </div>
-
-  <div class="section-title">响应效率 × 满意度分析</div>
-  <div class="alert info">
-    <span class="icon">💡</span>
-    <div>
-      <strong>小柒 · 响应快且销售高</strong>
-      首响8.4秒（团队最快），平响13.5秒（排名第一），四周销售额¥90,649，接待量第二。是团队中响应效率与销售贡献双优的标杆。<br>
-      <strong>小芽 · 快响应高效率</strong>
-      首响9.8秒、平响12.9秒（团队最短），满意度89.4%，响应效率全团最佳。<br>
-      <strong>丸子 · 平响异常偏高</strong>
-      丸子平响28.6秒为团队最高，但需特别说明：作为客服组长，丸子接待量仅472次（远低于其他成员），部分时间用于团队管理工作，响应指标不具同等横向可比性。且周期3拼多多128秒数据已标记为异常。
-    </div>
-  </div>
-
-  <div class="section-title">花花成长轨迹</div>
-  <div class="alert info">
-    <span class="icon">🌱</span>
-    <div><strong>花花（新人）成长显著</strong>
-    周期1仅104次接待、销售¥4,283；周期4快速增长至501次接待、销售¥30,969。人效¥56.58/次，已接近甚至超越部分老员工水平。建议在周报中作为正向激励案例予以表扬。</div>
-  </div>
-
-</div>
-
-<!-- ========== PAGE 5: 结论建议 ========== -->
-<div id="page-conclude" class="page">
-
-  <div class="section-title">主要结论</div>
-
-  <div class="insight-grid" style="margin-bottom:16px;">
-    <div class="insight-card">
-      <h4>✅ 团队整体承接大促能力强</h4>
-      <p>四周累计接待8,621次，销售额持续增长，周期4达峰值¥141,818。团队在活动持续压力下维持稳定接待节奏，整体运营表现良好。</p>
-    </div>
-    <div class="insight-card">
-      <h4>📊 销售贡献结构清晰</h4>
-      <p>理想燃料·天猫是绝对核心（销售额占35%），IDN·抖音是增速最快的新兴战场（周期1→2增幅114%）。双品牌策略差异互补，各有侧重。</p>
-    </div>
-    <div class="insight-card">
-      <h4>⚠️ 周期4满意度值得关注</h4>
-      <p>理想燃料周期4满意度降至77.6%，是四周最低点。大促尾期接待量回升但满意度未能同步提升，需排查具体原因（咨询类型变化/退款咨询增多/客服压力上升）。</p>
-    </div>
-  </div>
-
-  <div class="insight-grid" style="margin-bottom:24px;">
-    <div class="insight-card">
-      <h4>🌟 蛋宝儿销售贡献最大</h4>
-      <p>四周销售额¥129,542，接待量1,952次，均居团队第一。人效¥66.36/次，是团队销售主力。但满意度91.1%相对中等，平响18.9秒偏高，可作为进一步提升方向。</p>
-    </div>
-    <div class="insight-card">
-      <h4>⚡ 小柒响应最快</h4>
-      <p>首响8.4秒、平响13.5秒，均为团队最优。销售额¥90,649排名第二，是响应效率与销售双优的标杆人员，建议树立为响应标准参考。</p>
-    </div>
-    <div class="insight-card">
-      <h4>🌱 花花成长轨迹突出</h4>
-      <p>从周期1的104次接待到周期4的501次接待，人效已达¥56.58/次。新人成长速度超预期，正式完成培训期，可考虑扩大其独立接待范围。</p>
-    </div>
-  </div>
-
-  <div class="section-title">对客服团队管理的3条建议</div>
-
-  <div class="rec-list">
-    <div class="rec-card">
-      <div class="rec-num">1</div>
-      <div class="rec-body">
-        <h4>建立大促尾期满意度监控机制</h4>
-        <p>周期4（06.13-06.19）是本次大促的收尾阶段，理想燃料满意度77.6%为近期最低。建议在每次大促活动最后1周起，增设每日满意度跟踪提醒，及时发现并干预明显下滑的客服或店铺。可设定满意度低于85%为预警线，触发组长介入复盘。</p>
-      </div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-num">2</div>
-      <div class="rec-body">
-        <h4>以小柒为基准，推广标准化快响应话术</h4>
-        <p>小柒首响8.4秒是团队最优，且在高接待量下保持¥51.33/次的人效。建议整理其常用快响应话术和接待技巧，在团队内部分享，重点帮助晚晚（首响14.5秒）和丸子（管理工作外的接待时段）提升响应速度。</p>
-      </div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-num">3</div>
-      <div class="rec-body">
-        <h4>花花正式接入全量平台，同步建立成长考核节点</h4>
-        <p>花花周期4已接待501次，销售额¥30,969，成长速度超预期，已基本具备独立接待能力。建议正式将其纳入全量平台（含拼多多/京东POP等周期内未全量覆盖平台），并在下一个月报周期中纳入正式个人排名，进行更全面的考核评估。</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-title">异常项汇总</div>
-  <div class="alert danger">
-    <span class="icon">🚨</span>
-    <div><strong>丸子·拼多多·周期3 平响128秒</strong>
-    强烈建议核实该数据来源。若为系统异常或单次极端会话拉高，需从原始日志中剔除修正；若确为实际值，需了解具体接待场景（如长时间未回复的待处理会话）。此数据对丸子整体平响评价产生显著拉偏影响。</div>
-  </div>
-  <div class="alert warn">
-    <span class="icon">⚠️</span>
-    <div><strong>丸子 周期4 接待量仅25次，销售额-14元</strong>
-    周期4（06.13-06.19）丸子接待量极低，且因退款导致销售额出现负值。这与其担任组长的管理职责有关，但也建议确认是否处于部分休假或排班调整中，以便排班计划合理评估。</div>
-  </div>
-
-</div>
-
-<footer>
-  电商客服周报 · 分析周期 2026.05.23 – 2026.06.19 · 数据来源：各平台客服后台 · 由 Claude 生成
-</footer>
-
+<script id="report-data" type="application/json">
+{
+  "overall": [
+    {"period":"周期1","date":"05.30-06.05","reception":2192,"sales":103356.11,"first_resp":9.89,"avg_resp":15.1,"satis":95.39},
+    {"period":"周期2","date":"06.06-06.12","reception":2080,"sales":116503.7,"first_resp":14.25,"avg_resp":19.73,"satis":90.5},
+    {"period":"周期3","date":"06.13-06.19","reception":2163,"sales":141818.39,"first_resp":10.42,"avg_resp":15.13,"satis":80.82},
+    {"period":"周期4","date":"06.20-06.26","reception":1677,"sales":72100.56,"first_resp":12.73,"avg_resp":18.1,"satis":96.53}
+  ],
+  "brand_period": [
+    {"brand":"理想燃料","period":"周期1","date":"05.30-06.05","reception":1487,"sales":59219.3,"first_resp":10.03,"avg_resp":15.25,"satis":96.87},
+    {"brand":"理想燃料","period":"周期2","date":"06.06-06.12","reception":1382,"sales":55305.66,"first_resp":12.17,"avg_resp":19.25,"satis":89.54},
+    {"brand":"理想燃料","period":"周期3","date":"06.13-06.19","reception":1450,"sales":88092.1,"first_resp":10.69,"avg_resp":15.34,"satis":77.59},
+    {"brand":"理想燃料","period":"周期4","date":"06.20-06.26","reception":1120,"sales":42244.09,"first_resp":12.57,"avg_resp":18.47,"satis":96.56},
+    {"brand":"IDN","period":"周期1","date":"05.30-06.05","reception":705,"sales":44136.81,"first_resp":9.61,"avg_resp":14.71,"satis":92.58},
+    {"brand":"IDN","period":"周期2","date":"06.06-06.12","reception":698,"sales":61198.04,"first_resp":18.5,"avg_resp":20.88,"satis":91.91},
+    {"brand":"IDN","period":"周期3","date":"06.13-06.19","reception":713,"sales":53726.29,"first_resp":9.91,"avg_resp":14.64,"satis":86.47},
+    {"brand":"IDN","period":"周期4","date":"06.20-06.26","reception":557,"sales":29856.47,"first_resp":13.03,"avg_resp":17.16,"satis":96.5}
+  ],
+  "brand_total": [
+    {"brand":"理想燃料","reception":5439,"sales":244861.15,"efficiency":45.02,"first_resp":11.27,"avg_resp":16.94,"satis":89.61},
+    {"brand":"IDN","reception":2673,"sales":188917.61,"efficiency":70.68,"first_resp":12.66,"avg_resp":16.76,"satis":91.66}
+  ],
+  "store_period": [
+    {"brand":"理想燃料","store":"天猫","label":"理想燃料·天猫","period":"周期1","date":"05.30-06.05","reception":724,"sales":36474.75,"satis":100.0},
+    {"brand":"理想燃料","store":"天猫","label":"理想燃料·天猫","period":"周期2","date":"06.06-06.12","reception":648,"sales":31124.36,"satis":85.14},
+    {"brand":"理想燃料","store":"天猫","label":"理想燃料·天猫","period":"周期3","date":"06.13-06.19","reception":687,"sales":55440.19,"satis":77.13},
+    {"brand":"理想燃料","store":"天猫","label":"理想燃料·天猫","period":"周期4","date":"06.20-06.26","reception":592,"sales":31410.81,"satis":95.64},
+    {"brand":"IDN","store":"天猫","label":"IDN·天猫","period":"周期1","date":"05.30-06.05","reception":222,"sales":13252.0,"satis":96.43},
+    {"brand":"IDN","store":"天猫","label":"IDN·天猫","period":"周期2","date":"06.06-06.12","reception":203,"sales":18926.0,"satis":100.0},
+    {"brand":"IDN","store":"天猫","label":"IDN·天猫","period":"周期3","date":"06.13-06.19","reception":276,"sales":15756.0,"satis":92.17},
+    {"brand":"IDN","store":"天猫","label":"IDN·天猫","period":"周期4","date":"06.20-06.26","reception":181,"sales":13665.47,"satis":92.25},
+    {"brand":"理想燃料","store":"抖音","label":"理想燃料·抖音","period":"周期1","date":"05.30-06.05","reception":325,"sales":12403.46,"satis":89.22},
+    {"brand":"理想燃料","store":"抖音","label":"理想燃料·抖音","period":"周期2","date":"06.06-06.12","reception":337,"sales":11507.45,"satis":92.27},
+    {"brand":"理想燃料","store":"抖音","label":"理想燃料·抖音","period":"周期3","date":"06.13-06.19","reception":327,"sales":17426.58,"satis":73.33},
+    {"brand":"理想燃料","store":"抖音","label":"理想燃料·抖音","period":"周期4","date":"06.20-06.26","reception":148,"sales":1195.6,"satis":100.0},
+    {"brand":"IDN","store":"抖音","label":"IDN·抖音","period":"周期1","date":"05.30-06.05","reception":323,"sales":20624.81,"satis":88.33},
+    {"brand":"IDN","store":"抖音","label":"IDN·抖音","period":"周期2","date":"06.06-06.12","reception":324,"sales":24587.04,"satis":79.53},
+    {"brand":"IDN","store":"抖音","label":"IDN·抖音","period":"周期3","date":"06.13-06.19","reception":301,"sales":30041.29,"satis":74.62},
+    {"brand":"IDN","store":"抖音","label":"IDN·抖音","period":"周期4","date":"06.20-06.26","reception":246,"sales":7874.0,"satis":100.0},
+    {"brand":"理想燃料","store":"小红书","label":"理想燃料·小红书","period":"周期1","date":"05.30-06.05","reception":76,"sales":2232.9,"satis":100.0},
+    {"brand":"理想燃料","store":"小红书","label":"理想燃料·小红书","period":"周期2","date":"06.06-06.12","reception":88,"sales":4171.8,"satis":100.0},
+    {"brand":"理想燃料","store":"小红书","label":"理想燃料·小红书","period":"周期3","date":"06.13-06.19","reception":60,"sales":3394.0,"satis":100.0},
+    {"brand":"理想燃料","store":"小红书","label":"理想燃料·小红书","period":"周期4","date":"06.20-06.26","reception":62,"sales":812.9,"satis":100.0},
+    {"brand":"IDN","store":"小红书","label":"IDN·小红书","period":"周期1","date":"05.30-06.05","reception":160,"sales":10260.0,"satis":93.48},
+    {"brand":"IDN","store":"小红书","label":"IDN·小红书","period":"周期2","date":"06.06-06.12","reception":171,"sales":17685.0,"satis":100.0},
+    {"brand":"IDN","store":"小红书","label":"IDN·小红书","period":"周期3","date":"06.13-06.19","reception":136,"sales":7929.0,"satis":100.0},
+    {"brand":"IDN","store":"小红书","label":"IDN·小红书","period":"周期4","date":"06.20-06.26","reception":130,"sales":8317.0,"satis":95.99},
+    {"brand":"理想燃料","store":"拼多多","label":"理想燃料·拼多多","period":"周期1","date":"05.30-06.05","reception":260,"sales":4387.09,"satis":null},
+    {"brand":"理想燃料","store":"拼多多","label":"理想燃料·拼多多","period":"周期2","date":"06.06-06.12","reception":213,"sales":4912.45,"satis":null},
+    {"brand":"理想燃料","store":"拼多多","label":"理想燃料·拼多多","period":"周期3","date":"06.13-06.19","reception":285,"sales":8080.43,"satis":null},
+    {"brand":"理想燃料","store":"拼多多","label":"理想燃料·拼多多","period":"周期4","date":"06.20-06.26","reception":220,"sales":4958.18,"satis":null},
+    {"brand":"理想燃料","store":"京东POP","label":"理想燃料·京东POP","period":"周期1","date":"05.30-06.05","reception":102,"sales":3721.1,"satis":100.0},
+    {"brand":"理想燃料","store":"京东POP","label":"理想燃料·京东POP","period":"周期2","date":"06.06-06.12","reception":96,"sales":3589.6,"satis":100.0},
+    {"brand":"理想燃料","store":"京东POP","label":"理想燃料·京东POP","period":"周期3","date":"06.13-06.19","reception":91,"sales":3750.9,"satis":100.0},
+    {"brand":"理想燃料","store":"京东POP","label":"理想燃料·京东POP","period":"周期4","date":"06.20-06.26","reception":98,"sales":3866.6,"satis":100.0}
+  ],
+  "store_total": [
+    {"brand":"理想燃料","store":"天猫","label":"理想燃料·天猫","reception":2651,"sales":154450.11,"first_resp":10.66,"avg_resp":16.36,"satis":89.77},
+    {"brand":"IDN","store":"天猫","label":"IDN·天猫","reception":882,"sales":61599.47,"first_resp":9.37,"avg_resp":15.78,"satis":95.23},
+    {"brand":"理想燃料","store":"抖音","label":"理想燃料·抖音","reception":1137,"sales":42533.09,"first_resp":13.09,"avg_resp":14.9,"satis":86.07},
+    {"brand":"IDN","store":"抖音","label":"IDN·抖音","reception":1194,"sales":83127.14,"first_resp":15.08,"avg_resp":17.49,"satis":85.23},
+    {"brand":"理想燃料","store":"小红书","label":"理想燃料·小红书","reception":286,"sales":10611.6,"first_resp":null,"avg_resp":null,"satis":100.0},
+    {"brand":"IDN","store":"小红书","label":"IDN·小红书","reception":597,"sales":44191.0,"first_resp":null,"avg_resp":null,"satis":97.23},
+    {"brand":"理想燃料","store":"拼多多","label":"理想燃料·拼多多","reception":978,"sales":22338.15,"first_resp":null,"avg_resp":21.97,"satis":null},
+    {"brand":"理想燃料","store":"京东POP","label":"理想燃料·京东POP","reception":387,"sales":14928.2,"first_resp":10.02,"avg_resp":14.21,"satis":100.0}
+  ],
+  "agent_total": [
+    {"agent":"小柒","reception":1582,"sales":74594.86,"efficiency":47.15,"first_resp":8.43,"avg_resp":13.92,"satis":90.47},
+    {"agent":"丸子","reception":358,"sales":17220.11,"efficiency":48.1,"first_resp":13.59,"avg_resp":29.87,"satis":89.94},
+    {"agent":"晚晚","reception":1546,"sales":79241.87,"efficiency":51.26,"first_resp":14.9,"avg_resp":15.6,"satis":92.37},
+    {"agent":"小芽","reception":1627,"sales":81813.94,"efficiency":50.29,"first_resp":9.45,"avg_resp":12.73,"satis":90.82},
+    {"agent":"蛋宝儿","reception":1669,"sales":109305.42,"efficiency":65.49,"first_resp":13.28,"avg_resp":20.93,"satis":86.95},
+    {"agent":"花花","reception":1330,"sales":71602.56,"efficiency":53.84,"first_resp":12.57,"avg_resp":18.5,"satis":91.44}
+  ],
+  "agent_period": [
+    {"agent":"小柒","period":"周期1","reception":454,"sales":25992.97},
+    {"agent":"小柒","period":"周期2","reception":490,"sales":27033.51},
+    {"agent":"小柒","period":"周期3","reception":324,"sales":14584.4},
+    {"agent":"小柒","period":"周期4","reception":314,"sales":6983.98},
+    {"agent":"丸子","period":"周期1","reception":54,"sales":5336.21},
+    {"agent":"丸子","period":"周期2","reception":187,"sales":8150.53},
+    {"agent":"丸子","period":"周期3","reception":25,"sales":-14.23},
+    {"agent":"丸子","period":"周期4","reception":92,"sales":3747.6},
+    {"agent":"晚晚","period":"周期1","reception":412,"sales":16742.83},
+    {"agent":"晚晚","period":"周期2","reception":414,"sales":24987.48},
+    {"agent":"晚晚","period":"周期3","reception":388,"sales":22585.24},
+    {"agent":"晚晚","period":"周期4","reception":332,"sales":14926.32},
+    {"agent":"小芽","period":"周期1","reception":527,"sales":16776.63},
+    {"agent":"小芽","period":"周期2","reception":325,"sales":21858.08},
+    {"agent":"小芽","period":"周期3","reception":506,"sales":32903.46},
+    {"agent":"小芽","period":"周期4","reception":269,"sales":10275.77},
+    {"agent":"蛋宝儿","period":"周期1","reception":481,"sales":22464.25},
+    {"agent":"蛋宝儿","period":"周期2","reception":413,"sales":22395.03},
+    {"agent":"蛋宝儿","period":"周期3","reception":419,"sales":40790.73},
+    {"agent":"蛋宝儿","period":"周期4","reception":356,"sales":23655.41},
+    {"agent":"花花","period":"周期1","reception":264,"sales":16043.22},
+    {"agent":"花花","period":"周期2","reception":251,"sales":12079.07},
+    {"agent":"花花","period":"周期3","reception":501,"sales":30968.79},
+    {"agent":"花花","period":"周期4","reception":314,"sales":12511.48}
+  ],
+  "rankings": {
+    "reception": [{"agent":"蛋宝儿","value":1669},{"agent":"小芽","value":1627},{"agent":"小柒","value":1582},{"agent":"晚晚","value":1546},{"agent":"丸子","value":358}],
+    "sales": [{"agent":"蛋宝儿","value":109305.42},{"agent":"小芽","value":81813.94},{"agent":"晚晚","value":79241.87},{"agent":"小柒","value":74594.86},{"agent":"丸子","value":17220.11}],
+    "efficiency": [{"agent":"蛋宝儿","value":65.49},{"agent":"晚晚","value":51.26},{"agent":"小芽","value":50.29},{"agent":"丸子","value":48.1},{"agent":"小柒","value":47.15}],
+    "satis": [{"agent":"晚晚","value":92.37},{"agent":"小芽","value":90.82},{"agent":"小柒","value":90.47},{"agent":"丸子","value":89.94},{"agent":"蛋宝儿","value":86.95}],
+    "avg_resp": [{"agent":"小芽","value":12.73},{"agent":"小柒","value":13.92},{"agent":"晚晚","value":15.6},{"agent":"蛋宝儿","value":20.93},{"agent":"丸子","value":29.87}]
+  },
+  "wanzi_pdd_anomaly": [
+    {"period":"周期1","reception":6,"avg_resp":8.0},
+    {"period":"周期2","reception":30,"avg_resp":128.0},
+    {"period":"周期3","reception":2,"avg_resp":26.0},
+    {"period":"周期4","reception":11,"avg_resp":21.0}
+  ],
+  "periods": ["周期1","周期2","周期3","周期4"],
+  "period_dates": {"周期1":"05.30-06.05","周期2":"06.06-06.12","周期3":"06.13-06.19","周期4":"06.20-06.26"}
+}
+</script>
 <script>
-// ===== DATA =====
-const periods = ['周期1\n05.23-29', '周期2\n05.30-06.05', '周期3\n06.06-12', '周期4\n06.13-19'];
-const periodsShort = ['周期1', '周期2', '周期3', '周期4'];
+const DATA = JSON.parse(document.getElementById('report-data').textContent);
+const fmtInt = n => n==null? '-' : Math.round(n).toLocaleString('zh-CN');
+const fmtMoney = n => n==null? '-' : '¥'+n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtSec = n => n==null? '-' : n.toFixed(1)+'s';
+const fmtPct = n => n==null? '-' : n.toFixed(1)+'%';
+const COLOR_RL = '#3b82f6', COLOR_IDN = '#a855f7';
 
-const overviewVol = [2186, 2192, 2080, 2163];
-const overviewSales = [111526.66, 103356.11, 116503.70, 141818.39];
-
-const fuelVol = [1653, 1487, 1382, 1450];
-const fuelSales = [69071.96, 59219.30, 55305.66, 88092.10];
-const idnVol = [533, 705, 698, 713];
-const idnSales = [42454.70, 44136.81, 61198.04, 53726.29];
-
-const fuelSat = [94.4, 96.9, 89.5, 77.6];
-const idnSat = [98.7, 92.6, 91.9, 86.5];
-const fuelResp = [16.0, 15.3, 19.3, 15.3];
-const idnResp = [15.5, 14.7, 20.9, 14.6];
-
-const storeLabels = ['理想燃料·天猫','IDN·抖音','IDN·天猫','IDN·小红书','理想燃料·抖音','理想燃料·拼多多','理想燃料·京东POP','理想燃料·小红书'];
-const storeVol = {
-  '周期1': [808,151,250,132,394,274,103,74],
-  '周期2': [724,323,222,160,325,260,102,76],
-  '周期3': [648,324,203,171,337,213,96,88],
-  '周期4': [687,301,276,136,327,285,91,60]
-};
-const storeSales = {
-  '周期1': [43758,8974,21049,12431,16262,3839,3398,1814],
-  '周期2': [36475,20625,13252,10260,12403,4387,3721,2233],
-  '周期3': [31124,24587,18926,17685,11507,4912,3590,4172],
-  '周期4': [55440,30041,15756,7929,17427,8080,3751,3394]
-};
-
-const agents = ['蛋宝儿','小柒','晚晚','小芽','丸子','花花'];
-const agentData = {
-  '蛋宝儿': {vol:1952, sales:129542, eff:66.36, sat:91.1, fr:11.9, pr:18.9, byP:[639,481,413,419]},
-  '小柒':   {vol:1766, sales:90649,  eff:51.33, sat:88.6, fr:8.4,  pr:13.5, byP:[498,454,490,324]},
-  '晚晚':   {vol:1649, sales:81019,  eff:49.13, sat:92.6, fr:14.5, pr:15.2, byP:[435,412,414,388]},
-  '小芽':   {vol:1662, sales:79962,  eff:48.11, sat:89.4, fr:9.8,  pr:12.9, byP:[304,527,325,506]},
-  '丸子':   {vol:472,  sales:28658,  eff:60.72, sat:94.0, fr:14.1, pr:28.6, byP:[206,54,187,25]},
-  '花花':   {vol:1120, sales:63374,  eff:56.58, sat:90.0, fr:12.0, pr:18.6, byP:[104,264,251,501]}
-};
-
-// ===== CHART DEFAULTS =====
-const C = {
-  blue: '#4f7dff', purple: '#a855f7', green: '#22d3a4',
-  yellow: '#fbbf24', red: '#ff5e74', orange: '#fb923c',
-  muted: '#8890a8', border: '#2d3250', surface: '#1a1d27', text: '#e8eaf0'
-};
-Chart.defaults.color = C.muted;
-Chart.defaults.font.family = "'PingFang SC','Microsoft YaHei',system-ui";
-Chart.defaults.font.size = 11;
-
-function lineOpts(title) {
-  return {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { position: 'top', labels: { boxWidth: 10, padding: 12 } }, title: { display: false } },
-    scales: {
-      x: { grid: { color: C.border }, ticks: { color: C.muted } },
-      y: { grid: { color: C.border }, ticks: { color: C.muted } }
-    }
-  };
-}
-function barOpts(horizontal=false) {
-  return {
-    indexAxis: horizontal ? 'y' : 'x',
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: horizontal ? C.border : 'transparent' }, ticks: { color: C.muted } },
-      y: { grid: { color: horizontal ? 'transparent' : C.border }, ticks: { color: C.muted } }
-    }
-  };
-}
-
-function mk(id, type, data, opts) {
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  return new Chart(ctx, { type, data, options: opts });
-}
-
-// ===== CHARTS =====
-window.addEventListener('load', () => {
-  // Overview
-  mk('c-overview-vol', 'bar', {
-    labels: periodsShort,
-    datasets: [
-      { label:'理想燃料', data:fuelVol, backgroundColor:'rgba(79,125,255,0.8)', borderRadius:4 },
-      { label:'IDN', data:idnVol, backgroundColor:'rgba(168,85,247,0.8)', borderRadius:4 }
-    ]
-  }, { ...barOpts(), plugins: { legend: { position:'top', labels:{boxWidth:10,padding:12} } }, scales: { x:{stacked:true,grid:{color:C.border}}, y:{stacked:true,grid:{color:C.border}} } });
-
-  mk('c-overview-sales', 'line', {
-    labels: periodsShort,
-    datasets: [
-      { label:'理想燃料', data:fuelSales, borderColor:C.blue, backgroundColor:'rgba(79,125,255,0.1)', tension:0.4, fill:true, pointRadius:4 },
-      { label:'IDN', data:idnSales, borderColor:C.purple, backgroundColor:'rgba(168,85,247,0.08)', tension:0.4, fill:true, borderDash:[6,3], pointRadius:4 }
-    ]
-  }, lineOpts());
-
-  // Brand
-  mk('c-fuel-vol', 'bar', { labels:periodsShort, datasets:[{ label:'接待量', data:fuelVol, backgroundColor:'rgba(79,125,255,0.8)', borderRadius:4 }] }, barOpts());
-  mk('c-fuel-sales', 'line', { labels:periodsShort, datasets:[{ label:'销售额(元)', data:fuelSales, borderColor:C.blue, backgroundColor:'rgba(79,125,255,0.12)', tension:0.4, fill:true, pointRadius:5 }] }, lineOpts());
-  mk('c-idn-vol', 'bar', { labels:periodsShort, datasets:[{ label:'接待量', data:idnVol, backgroundColor:'rgba(168,85,247,0.8)', borderRadius:4 }] }, barOpts());
-  mk('c-idn-sales', 'line', { labels:periodsShort, datasets:[{ label:'销售额(元)', data:idnSales, borderColor:C.purple, backgroundColor:'rgba(168,85,247,0.1)', tension:0.4, fill:true, borderDash:[6,3], pointRadius:5 }] }, lineOpts());
-
-  mk('c-brand-sat', 'line', {
-    labels: periodsShort,
-    datasets: [
-      { label:'理想燃料满意度%', data:fuelSat, borderColor:C.blue, backgroundColor:'rgba(79,125,255,0.08)', tension:0.4, fill:true, pointRadius:5 },
-      { label:'IDN满意度%', data:idnSat, borderColor:C.purple, backgroundColor:'rgba(168,85,247,0.07)', tension:0.4, fill:true, borderDash:[6,3], pointRadius:5 }
-    ]
-  }, { ...lineOpts(), scales: { x:{grid:{color:C.border}}, y:{grid:{color:C.border},min:70,max:102} } });
-
-  mk('c-brand-resp', 'line', {
-    labels: periodsShort,
-    datasets: [
-      { label:'理想燃料平响(秒)', data:fuelResp, borderColor:C.blue, tension:0.4, pointRadius:5 },
-      { label:'IDN平响(秒)', data:idnResp, borderColor:C.purple, tension:0.4, borderDash:[6,3], pointRadius:5 }
-    ]
-  }, lineOpts());
-
-  // Store
-  const storeColors = ['rgba(79,125,255,0.85)','rgba(168,85,247,0.85)','rgba(168,85,247,0.6)','rgba(192,132,252,0.75)','rgba(99,155,255,0.75)','rgba(79,125,255,0.5)','rgba(123,163,255,0.6)','rgba(79,125,255,0.4)'];
-  mk('c-store-vol', 'bar', {
-    labels: storeLabels,
-    datasets: periodsShort.map((p,i) => ({ label:p, data:storeVol[p], backgroundColor:['rgba(79,125,255,0.9)','rgba(79,125,255,0.65)','rgba(79,125,255,0.45)','rgba(79,125,255,0.3)'][i], borderRadius:3 }))
-  }, { ...barOpts(), plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12}}}, scales:{x:{stacked:false,grid:{color:C.border}},y:{grid:{color:C.border}}} });
-
-  mk('c-store-sales', 'bar', {
-    labels: storeLabels,
-    datasets: periodsShort.map((p,i) => ({ label:p, data:storeSales[p], backgroundColor:['rgba(168,85,247,0.9)','rgba(168,85,247,0.65)','rgba(168,85,247,0.45)','rgba(168,85,247,0.3)'][i], borderRadius:3 }))
-  }, { ...barOpts(), plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12}}}, scales:{x:{stacked:false,grid:{color:C.border}},y:{grid:{color:C.border}}} });
-
-  // Agent table
-  const volRank = [...agents].sort((a,b)=>agentData[b].vol-agentData[a].vol);
-  const salesRank = [...agents].sort((a,b)=>agentData[b].sales-agentData[a].sales);
-  const effRank = [...agents].sort((a,b)=>agentData[b].eff-agentData[a].eff);
-  const satRank = [...agents].filter(a=>agentData[a].sat>0).sort((a,b)=>agentData[b].sat-agentData[a].sat);
-  const respRank = [...agents].sort((a,b)=>agentData[a].pr-agentData[b].pr);
-
-  function rankBadge(i) {
-    const cls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return `<span class="rank-badge ${cls}">${i+1}</span>`;
-  }
-  const tbody = document.getElementById('agent-table-body');
-  volRank.forEach((name, i) => {
-    const d = agentData[name];
-    const satDisp = d.sat > 0 ? d.sat.toFixed(1) + '%' : '—';
-    const note = name==='丸子'?'<span class="tag lead">组长</span>':name==='花花'?'<span class="tag new">成长期</span>':'';
-    tbody.innerHTML += `<tr>
-      <td>${rankBadge(i)}</td>
-      <td><strong>${name}</strong> ${note}</td>
-      <td>${d.vol.toLocaleString()}</td>
-      <td>¥${d.sales.toLocaleString()}</td>
-      <td>${d.eff.toFixed(2)}</td>
-      <td>${satDisp}</td>
-      <td>${d.fr}秒</td>
-      <td>${name==='丸子'?'<span style="color:var(--yellow)">'+d.pr+'秒⚠️</span>':d.pr+'秒'}</td>
-    </tr>`;
+// ---------- Nav ----------
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
   });
-
-  // Agent rank charts
-  const sortedByVol = [...agents].sort((a,b)=>agentData[a].vol-agentData[b].vol);
-  mk('c-rank-vol', 'bar', {
-    labels: sortedByVol,
-    datasets: [{ data: sortedByVol.map(a=>agentData[a].vol), backgroundColor: sortedByVol.map(a=>a==='蛋宝儿'?C.yellow:a==='花花'?'rgba(168,85,247,0.7)':C.blue), borderRadius:4 }]
-  }, barOpts(true));
-
-  const sortedBySales = [...agents].sort((a,b)=>agentData[a].sales-agentData[b].sales);
-  mk('c-rank-sales', 'bar', {
-    labels: sortedBySales,
-    datasets: [{ data: sortedBySales.map(a=>agentData[a].sales), backgroundColor: sortedBySales.map(a=>a==='蛋宝儿'?C.yellow:C.purple), borderRadius:4 }]
-  }, barOpts(true));
-
-  const sortedByEff = [...agents].sort((a,b)=>agentData[a].eff-agentData[b].eff);
-  mk('c-rank-eff', 'bar', {
-    labels: sortedByEff,
-    datasets: [{ data: sortedByEff.map(a=>agentData[a].eff), backgroundColor: sortedByEff.map(a=>a==='丸子'?C.yellow:C.green), borderRadius:4 }]
-  }, barOpts(true));
-
-  const sortedByResp = [...agents].sort((a,b)=>agentData[b].pr-agentData[a].pr);
-  mk('c-rank-resp', 'bar', {
-    labels: sortedByResp,
-    datasets: [{ data: sortedByResp.map(a=>agentData[a].pr), backgroundColor: sortedByResp.map(a=>a==='丸子'?C.red:a==='小芽'||a==='小柒'?C.green:'rgba(79,125,255,0.7)'), borderRadius:4 }]
-  }, barOpts(true));
-
-  // Agent trend
-  const agentColors = {'蛋宝儿':C.yellow,'小柒':C.blue,'晚晚':C.green,'小芽':C.orange,'丸子':C.muted,'花花':C.purple};
-  mk('c-agent-trend', 'line', {
-    labels: periodsShort,
-    datasets: agents.map(a => ({
-      label: a,
-      data: agentData[a].byP,
-      borderColor: agentColors[a],
-      backgroundColor: 'transparent',
-      tension: 0.4,
-      pointRadius: 4,
-      borderDash: a==='丸子'?[5,4]:a==='花花'?[4,2]:[],
-      borderWidth: a==='花花'?2.5:1.8
-    }))
-  }, { ...lineOpts(), plugins:{ legend:{ position:'right', labels:{boxWidth:10,padding:10,font:{size:12}} } } });
 });
 
-// ===== NAV =====
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  event.target.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+Chart.defaults.font.family = "-apple-system,'PingFang SC','Microsoft YaHei',sans-serif";
+Chart.defaults.color = '#8b96a5';
+Chart.defaults.borderColor = '#2a3340';
+
+// ================= 1. 总体概览 =================
+(function(){
+  const o = DATA.overall;
+  const last = o[o.length-1], prev = o[o.length-2];
+  const delta = (a,b)=> a==null||b==null||b===0 ? null : (a-b)/b*100;
+  const kpis = [
+    {label:'本周接待量（周期4）', value: fmtInt(last.reception), d: delta(last.reception,prev.reception)},
+    {label:'本周销售额（周期4）', value: fmtMoney(last.sales), d: delta(last.sales,prev.sales)},
+    {label:'本周平均响应（平响）', value: fmtSec(last.avg_resp), d: delta(last.avg_resp,prev.avg_resp), inverse:true},
+    {label:'本周满意度', value: fmtPct(last.satis), d: last.satis-prev.satis, isDiff:true},
+  ];
+  document.getElementById('kpi-cards').innerHTML = kpis.map(k=>{
+    let dtext='', dclass='flat';
+    if(k.d!=null){
+      const v = k.isDiff? k.d : k.d;
+      const goodDir = k.inverse ? v<0 : v>0;
+      dclass = Math.abs(v)<0.5? 'flat' : (goodDir? 'up':'down');
+      const arrow = v>0?'▲':(v<0?'▼':'—');
+      dtext = k.isDiff? `${arrow} ${Math.abs(v).toFixed(1)}pct 较周期3` : `${arrow} ${Math.abs(v).toFixed(1)}% 较周期3`;
+    }
+    return `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="delta ${dclass}">${dtext}</div></div>`;
+  }).join('');
+
+  new Chart(document.getElementById('chartOverallTrend'),{
+    type:'bar',
+    data:{
+      labels:o.map(r=>r.period+'\n'+r.date),
+      datasets:[
+        {type:'bar', label:'接待量', data:o.map(r=>r.reception), backgroundColor:'rgba(59,130,246,0.55)', yAxisID:'y', borderRadius:6, order:2},
+        {type:'line', label:'销售额', data:o.map(r=>r.sales), borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.15)', yAxisID:'y1', tension:.3, fill:true, order:1, pointRadius:4}
+      ]
+    },
+    options:{responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      scales:{
+        y:{position:'left', title:{display:true,text:'接待量'}, grid:{color:'#1c2330'}},
+        y1:{position:'right', title:{display:true,text:'销售额(¥)'}, grid:{display:false}}
+      },
+      plugins:{legend:{position:'top', labels:{boxWidth:12}}}
+    }
+  });
+
+  new Chart(document.getElementById('chartServiceTrend'),{
+    type:'line',
+    data:{
+      labels:o.map(r=>r.period),
+      datasets:[
+        {label:'首响(s)', data:o.map(r=>r.first_resp), borderColor:'#60a5fa', backgroundColor:'rgba(96,165,250,0.1)', tension:.3, yAxisID:'y'},
+        {label:'平响(s)', data:o.map(r=>r.avg_resp), borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', tension:.3, yAxisID:'y'},
+        {label:'满意度(%)', data:o.map(r=>r.satis), borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.1)', tension:.3, yAxisID:'y1'}
+      ]
+    },
+    options:{responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{position:'left', title:{display:true,text:'响应时长(秒)'}, grid:{color:'#1c2330'}},
+        y1:{position:'right', title:{display:true,text:'满意度(%)'}, grid:{display:false}, min:60, max:100}
+      },
+      plugins:{legend:{position:'top'}}
+    }
+  });
+
+  document.getElementById('weekSummaryText').innerHTML =
+    `接待量 ${fmtInt(last.reception)} 人次（环比 ${last.reception<prev.reception?'下降':'上升'} ${Math.abs(delta(last.reception,prev.reception)).toFixed(1)}%），
+    销售额 ${fmtMoney(last.sales)}（环比 ${last.sales<prev.sales?'下降':'上升'} ${Math.abs(delta(last.sales,prev.sales)).toFixed(1)}%）。
+    本周满意度回升至 ${fmtPct(last.satis)}（上周期 ${fmtPct(prev.satis)}），响应效率保持稳定。
+    需注意：本周接待量与销售额双降，与平台「5.13-6.21」大促活动周期在本周内收尾（6月21日24点结束）高度吻合，属于活动退坡的正常季节性回落，而非服务能力问题。`;
+})();
+
+// ================= 2. 品牌环比 =================
+function renderBrandTrend(brand, canvasId, color, tableId){
+  const rows = DATA.brand_period.filter(r=>r.brand===brand);
+  new Chart(document.getElementById(canvasId),{
+    type:'bar',
+    data:{
+      labels: rows.map(r=>r.period+' ('+r.date+')'),
+      datasets:[
+        {type:'bar', label:'接待量', data:rows.map(r=>r.reception), backgroundColor: color+'88', yAxisID:'y', borderRadius:6},
+        {type:'line', label:'销售额', data:rows.map(r=>r.sales), borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.15)', yAxisID:'y1', tension:.3, fill:true, pointRadius:4}
+      ]
+    },
+    options:{responsive:true, maintainAspectRatio:false,
+      scales:{ y:{position:'left', title:{display:true,text:'接待量'}, grid:{color:'#1c2330'}},
+               y1:{position:'right', title:{display:true,text:'销售额(¥)'}, grid:{display:false}} },
+      plugins:{legend:{position:'top'}}
+    }
+  });
+  document.getElementById(tableId).innerHTML = `<table>
+    <thead><tr><th>周期</th><th>接待量</th><th>销售额</th><th>首响</th><th>平响</th><th>满意度</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td>${r.period}（${r.date}）</td><td>${fmtInt(r.reception)}</td><td>${fmtMoney(r.sales)}</td><td>${fmtSec(r.first_resp)}</td><td>${fmtSec(r.avg_resp)}</td><td>${fmtPct(r.satis)}</td></tr>`).join('')}</tbody>
+  </table>`;
 }
+renderBrandTrend('理想燃料','chartRLTrend',COLOR_RL,'rlTable');
+renderBrandTrend('IDN','chartIDNTrend',COLOR_IDN,'idnTable');
+
+new Chart(document.getElementById('chartSatisTrend'),{
+  type:'line',
+  data:{
+    labels: DATA.periods,
+    datasets:[
+      {label:'理想燃料满意度(%)', data: DATA.brand_period.filter(r=>r.brand==='理想燃料').map(r=>r.satis), borderColor:COLOR_RL, backgroundColor:'rgba(59,130,246,0.1)', tension:.3, borderDash:[]},
+      {label:'IDN满意度(%)', data: DATA.brand_period.filter(r=>r.brand==='IDN').map(r=>r.satis), borderColor:COLOR_IDN, backgroundColor:'rgba(168,85,247,0.1)', tension:.3, borderDash:[6,4]}
+    ]
+  },
+  options:{responsive:true, maintainAspectRatio:false, scales:{y:{min:60,max:100, grid:{color:'#1c2330'}}}, plugins:{legend:{position:'top'}}}
+});
+
+document.getElementById('brandTrendAnalysis').innerHTML = `
+<h2>环比分析结论</h2>
+<div class="card">
+<ul class="bullets">
+<li><b>理想燃料：</b>接待量周期1→4依次为 1487→1382→1450→1120，周期4环比下降 22.8%；销售额周期3达峰值 ¥88,092（环比+59.3%），周期4回落至 ¥42,244（环比-52.0%）。周期3销售放量与「5.13-6.21电商平台理想燃料&IDN活动期」处于活动中段、流量与转化集中释放相符；周期4活动于6月21日24点结束，接待与成交同步回落，属于活动退坡的正常表现。满意度在周期3降至 77.59%（全周期最低），与大促期咨询高峰、客服压力上升相关，周期4活动结束后满意度回升至 96.56%，服务质量随压力释放而修复。</li>
+<li><b>IDN理想营养：</b>接待量基本平稳（705→698→713→557），周期4同样出现22%左右下滑，与理想燃料同步，进一步印证为平台大促退坡的共性影响而非品牌个体问题。销售额周期2达到峰值 ¥61,198（环比+38.7%），周期3小幅回落，周期4降至全周期最低 ¥29,856（环比-44.4%）。满意度走势与理想燃料相似，周期3探底（86.47%），周期4回升至96.5%。</li>
+<li><b>共性判断：</b>两品牌在周期4（本周）接待量、销售额同步大幅下降，时间点与「5.13-6.21活动期」收尾完全吻合，应判定为<b>活动驱动的正常季节性回落</b>，而非客服团队服务能力或店铺运营异常；满意度反而是全周期最高点，说明客服在大促压力解除后服务质量稳定向好。</li>
+</ul>
+</div>`;
+
+// ================= 3. 品牌横向对比 =================
+(function(){
+  const bt = DATA.brand_total;
+  new Chart(document.getElementById('chartBrandCompareBar'),{
+    type:'bar',
+    data:{
+      labels:['接待量','销售额(÷100)','人效','满意度'],
+      datasets: bt.map(b=>({
+        label:b.brand,
+        data:[b.reception, b.sales/100, b.efficiency, b.satis],
+        backgroundColor: b.brand==='理想燃料'? 'rgba(59,130,246,0.7)':'rgba(168,85,247,0.7)',
+        borderRadius:6
+      }))
+    },
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}}, scales:{y:{grid:{color:'#1c2330'}}}}
+  });
+  document.getElementById('brandCompareTable').innerHTML = `<table>
+    <thead><tr><th>品牌</th><th>接待量</th><th>销售额</th><th>人效(元/接待)</th><th>首响</th><th>平响</th><th>满意度</th></tr></thead>
+    <tbody>${bt.map(b=>`<tr><td><span class="tag ${b.brand==='理想燃料'?'rl':'idn'}">${b.brand}</span></td><td>${fmtInt(b.reception)}</td><td>${fmtMoney(b.sales)}</td><td>¥${b.efficiency}</td><td>${fmtSec(b.first_resp)}</td><td>${fmtSec(b.avg_resp)}</td><td>${fmtPct(b.satis)}</td></tr>`).join('')}</tbody>
+  </table>`;
+
+  document.getElementById('brandCompareAnalysis').innerHTML = `<div class="card">
+  <ul class="bullets">
+  <li><b>接待规模：</b>理想燃料四周期累计接待 5,439 人次，是 IDN（2,673 人次）的约 2 倍，符合理想燃料覆盖5个平台（多1个京东POP+拼多多）、IDN仅3个平台的渠道结构差异。</li>
+  <li><b>销售贡献：</b>理想燃料累计销售额 ¥244,861，略高于 IDN 的 ¥188,918，但差距远小于接待量差距，说明 <b>IDN 客单价/转化效率更高</b>。</li>
+  <li><b>服务效率（人效）：</b>IDN 人效达 ¥70.68/接待，显著高于理想燃料的 ¥45.02/接待，体现海外营养品（保税仓发货）客单价更高、转化路径更短的特点。</li>
+  <li><b>满意度表现：</b>两品牌四周期累计满意度接近（IDN 91.66% vs 理想燃料 89.61%），整体服务稳定性相当，IDN略优。</li>
+  <li><b>结论：</b>理想燃料是"流量与接待规模"的主力，IDN 是"客单价与人效"的主力，两者互补，客服团队需按品牌特性差异化考核（理想燃料更看重接待吞吐与响应时效，IDN更看重转化与人效）。</li>
+  </ul>
+  </div>`;
+})();
+
+// ================= 4. 店铺维度 =================
+(function(){
+  const st = DATA.store_total;
+  const colorOf = b => b==='理想燃料' ? COLOR_RL : COLOR_IDN;
+  new Chart(document.getElementById('chartStoreTotal'),{
+    type:'bar',
+    data:{
+      labels: st.map(s=>s.label),
+      datasets:[
+        {type:'bar', label:'接待量', data:st.map(s=>s.reception), backgroundColor: st.map(s=>colorOf(s.brand)+'90'), yAxisID:'y', borderRadius:6},
+        {type:'line', label:'销售额', data:st.map(s=>s.sales), borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.15)', yAxisID:'y1', tension:.3, fill:true, pointRadius:4}
+      ]
+    },
+    options:{responsive:true, maintainAspectRatio:false,
+      scales:{ y:{position:'left', title:{display:true,text:'接待量'}, grid:{color:'#1c2330'}},
+               y1:{position:'right', title:{display:true,text:'销售额(¥)'}, grid:{display:false}} },
+      plugins:{legend:{position:'top'}}
+    }
+  });
+
+  const combos = [...new Set(DATA.store_period.map(r=>r.label))];
+  const palette = ['#3b82f6','#60a5fa','#93c5fd','#a855f7','#c084fc','#d8b4fe','#f59e0b','#22c55e'];
+  new Chart(document.getElementById('chartStoreTrend'),{
+    type:'line',
+    data:{
+      labels: DATA.periods,
+      datasets: combos.map((c,i)=>{
+        const rows = DATA.periods.map(p=> DATA.store_period.find(r=>r.label===c && r.period===p)?.reception ?? null);
+        const brand = DATA.store_period.find(r=>r.label===c).brand;
+        return {label:c, data:rows, borderColor:palette[i%palette.length], backgroundColor:'transparent', tension:.3, borderDash: brand==='IDN'?[6,4]:[]};
+      })
+    },
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top', labels:{boxWidth:10, font:{size:11}}}}, scales:{y:{title:{display:true,text:'接待量'}, grid:{color:'#1c2330'}}}}
+  });
+
+  document.getElementById('storeTable').innerHTML = `<table>
+    <thead><tr><th>品牌·店铺</th><th>接待量</th><th>销售额</th><th>首响</th><th>平响</th><th>满意度</th></tr></thead>
+    <tbody>${st.sort((a,b)=>b.reception-a.reception).map(s=>`<tr><td><span class="tag ${s.brand==='理想燃料'?'rl':'idn'}">${s.label}</span></td><td>${fmtInt(s.reception)}</td><td>${fmtMoney(s.sales)}</td><td>${fmtSec(s.first_resp)}</td><td>${fmtSec(s.avg_resp)}</td><td>${fmtPct(s.satis)}</td></tr>`).join('')}</tbody>
+  </table>`;
+
+  document.getElementById('storeAnalysis').innerHTML = `<h2>店铺数据分析</h2><div class="card">
+  <ul class="bullets">
+  <li><b>接待量最高：</b>理想燃料·天猫（2,651人次），其次为 IDN·抖音（1,194）与理想燃料·抖音（1,137），天猫与抖音是接待主战场。</li>
+  <li><b>销售贡献最高：</b>理想燃料·天猫贡献 ¥154,450，居全店首位；IDN·抖音以 ¥83,127 排第二，体现抖音内容种草+成交转化能力较强。</li>
+  <li><b>变化明显的店铺：</b>理想燃料·抖音在周期4接待量骤降至148（周期1-3均超300），销售额仅¥1,196（周期1-3均超¥1.1万），降幅远超其他店铺，建议核查该店铺周期4是否存在活动下架、库存不足或流量分配变化等店铺侧因素，而非客服服务问题。</li>
+  <li><b>拼多多与小红书：</b>拼多多店铺满意度数据长期缺失（建议核实评价采集链路），小红书首响/平响数据缺失（平台接口未覆盖响应时长字段），均为口径缺口而非异常波动，建议在数据源头补全。</li>
+  </ul>
+  </div>`;
+})();
+
+// ================= 5. 客服个人表现 =================
+(function(){
+  const at = DATA.agent_total;
+  document.getElementById('agentTable').innerHTML = `<table>
+    <thead><tr><th>客服</th><th>接待量</th><th>销售额</th><th>人效</th><th>满意度</th><th>首响</th><th>平响</th></tr></thead>
+    <tbody>${at.map(a=>`<tr><td>${a.agent}${a.agent==='丸子'?' <span class="badge warn">组长</span>':''}${a.agent==='花花'?' <span class="badge good">新人</span>':''}</td><td>${fmtInt(a.reception)}</td><td>${fmtMoney(a.sales)}</td><td>¥${a.efficiency}</td><td>${fmtPct(a.satis)}</td><td>${fmtSec(a.first_resp)}</td><td>${fmtSec(a.avg_resp)}</td></tr>`).join('')}</tbody>
+  </table>`;
+
+  function renderRank(containerId, list, fmt){
+    const max = Math.max(...list.map(x=>x.value));
+    document.getElementById(containerId).innerHTML = list.map((x,i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+        <div class="rank-name">${x.agent}</div>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(x.value/max*100).toFixed(0)}%"></div></div>
+        <div class="rank-val">${fmt(x.value)}</div>
+      </div>`).join('');
+  }
+  renderRank('rankReception', DATA.rankings.reception, fmtInt);
+  renderRank('rankSales', DATA.rankings.sales, fmtMoney);
+  renderRank('rankEfficiency', DATA.rankings.efficiency, v=>'¥'+v);
+  renderRank('rankSatis', DATA.rankings.satis, fmtPct);
+  // resp ranking: lower is better, invert bar scale
+  (function(){
+    const list = DATA.rankings.avg_resp;
+    const max = Math.max(...list.map(x=>x.value));
+    document.getElementById('rankResp').innerHTML = list.map((x,i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+        <div class="rank-name">${x.agent}</div>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(x.value/max*100).toFixed(0)}%"></div></div>
+        <div class="rank-val">${x.value.toFixed(1)}s</div>
+      </div>`).join('');
+  })();
+
+  // resp vs satis scatter
+  new Chart(document.getElementById('chartRespVsSatis'),{
+    type:'scatter',
+    data:{datasets:[{
+      label:'客服',
+      data: at.map(a=>({x:a.avg_resp, y:a.satis, agent:a.agent})),
+      backgroundColor: at.map(a=> a.agent==='花花' ? 'rgba(139,150,165,0.6)' : 'rgba(59,130,246,0.75)'),
+      pointRadius:9, pointHoverRadius:11
+    }]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label: ctx=> `${ctx.raw.agent}：平响${ctx.raw.x}s，满意度${ctx.raw.y}%`}}
+      },
+      scales:{
+        x:{title:{display:true,text:'平均响应时长(秒，越左越快)'}, grid:{color:'#1c2330'}},
+        y:{title:{display:true,text:'满意度(%)'}, min:80, max:96, grid:{color:'#1c2330'}}
+      }
+    },
+    plugins:[{
+      id:'datalabels',
+      afterDatasetsDraw(chart){
+        const {ctx} = chart;
+        chart.data.datasets[0].data.forEach((d,i)=>{
+          const meta = chart.getDatasetMeta(0).data[i];
+          ctx.save(); ctx.fillStyle='#e6edf3'; ctx.font='12px sans-serif'; ctx.textAlign='center';
+          ctx.fillText(d.agent, meta.x, meta.y-14); ctx.restore();
+        });
+      }
+    }]
+  });
+
+  document.getElementById('respSatisAnalysis').innerHTML = `<div class="card">
+  <ul class="bullets">
+  <li><b>响应快且满意度高：</b>小芽（平响12.73s，满意度90.82%）、小柒（13.92s，90.47%）— 响应效率与满意度均处于团队前列，是效率与体验兼顾的标杆。</li>
+  <li><b>响应慢但满意度仍较高：</b>丸子（平响29.87s，满意度89.94%）— 响应时长偏长主要受组长管理协调工作挤占时间影响，且接待量基数小（358人次，仅为人均的1/4），满意度未受明显拖累，体现其接待质量本身较稳定。</li>
+  <li><b>响应一般、满意度领先：</b>晚晚（平响15.6s，满意度92.37%，团队最高）— 响应速度中等但服务质量评价最优，可能与沟通方式、解决问题的彻底程度有关，值得总结其服务话术经验。</li>
+  <li><b>需关注：</b>蛋宝儿响应最慢（平响20.93s）且满意度最低（86.95%），但销售额、人效均为团队第一（¥109,305 / ¥65.49/接待），呈现"高转化、高响应时长、相对低满意度"的特征，建议关注其是否因咨询深度更高（导流高客单转化）而响应耗时增加，避免单纯以响应时长苛责，但满意度仍有提升空间，建议针对性复盘话术。</li>
+  <li><b>总体结论：</b>团队响应速度与满意度无明显负相关，响应快不必然带来高满意度，服务态度、专业度与问题解决能力同样关键。</li>
+  </ul>
+  </div>`;
+
+  // agent trend chart (reception only, exclude none, include all 6)
+  const agents = [...new Set(DATA.agent_period.map(r=>r.agent))];
+  const palette2 = ['#3b82f6','#f59e0b','#22c55e','#a855f7','#ef4444','#8b96a5'];
+  new Chart(document.getElementById('chartAgentTrend'),{
+    type:'line',
+    data:{
+      labels: DATA.periods,
+      datasets: agents.map((a,i)=>({
+        label:a,
+        data: DATA.periods.map(p=> DATA.agent_period.find(r=>r.agent===a&&r.period===p)?.reception ?? null),
+        borderColor: palette2[i%palette2.length], backgroundColor:'transparent', tension:.3
+      }))
+    },
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}}, scales:{y:{title:{display:true,text:'接待量'}, grid:{color:'#1c2330'}}}}
+  });
+})();
+
+// ================= 6/7 结论与建议 =================
+document.getElementById('mainConclusions').innerHTML = `
+<div class="card conclusion-card">
+<ul class="bullets">
+<li><b>本周（周期4）接待量与销售额双降（-22.5% / -49.2%），主因是「5.13-6.21电商平台理想燃料&IDN活动期」于6月21日24点正式结束，本周大部分时间已脱离大促流量与转化红利，属于<b>正常的活动退坡性回落</b>，两品牌、多店铺同步出现一致性下滑，可排除客服团队服务能力或单一店铺异常的可能性。</li>
+<li><b>服务质量本周不降反升：</b>满意度从周期3的80.82%（全周期低点，正值活动高峰期咨询压力最大）回升至本周96.53%（全周期最高），说明客服团队在脱离大促高压后的接待质量稳定向好，团队对活动期高强度咨询的承接能力总体可控。</li>
+<li><b>品牌差异清晰：</b>理想燃料以接待规模取胜（多平台覆盖、5439人次），IDN以转化效率取胜（人效¥70.68/接待，高出理想燃料57%），两品牌应采取差异化的考核与资源配置策略。</li>
+<li><b>异常项核查：</b>①丸子-拼多多在周期2平响骤增至128秒（其余周期均在8-26秒区间），建议核实是否为个例会话超长未及时关闭或数据录入异常，而非系统性响应能力下降；②理想燃料·抖音店铺周期4接待量/销售额骤降至个位数水平（接待148、销售¥1,196，远低于周期1-3），建议核查该店铺侧是否存在活动下架、商品库存或流量分配变化，与客服侧无关。</li>
+<li><b>人员表现：</b>蛋宝儿销售额与人效均为团队第一，是核心转化担当；丸子作为组长接待量基数小、响应偏慢，需结合管理职责综合评估，不宜与一线纯接待客服直接横向比较；花花（5月新人）四周期累计接待1330人次、销售¥71,603，增长趋势良好，已具备团队中等贡献水平。</li>
+</ul>
+</div>`;
+
+document.getElementById('recommendations').innerHTML = `
+<div class="grid grid-2">
+  <div class="card">
+    <h3>① 异常数据核查机制</h3>
+    <p style="font-size:14px;">针对丸子-拼多多平响128秒等明显偏离历史区间的数据点，建立"周报异常自动标记+人工核实"双重机制，区分系统口径问题、个例会话异常与真实绩效问题，避免在未核实前直接纳入考核结论，提升数据可信度。</p>
+  </div>
+  <div class="card">
+    <h3>② 大促前后弹性排班</h3>
+    <p style="font-size:14px;">活动高峰期（如本次5.13-6.21）满意度明显承压（周期3低至77-81%），建议在活动期内增加临时人力或调整排班密度，重点保障首响/平响不被拉长；活动结束后的回落期可适度收缩排班、安排培训复盘，提升人力资源使用效率。</p>
+  </div>
+  <div class="card">
+    <h3>③ 差异化品牌与渠道资源配置</h3>
+    <p style="font-size:14px;">IDN人效显著高于理想燃料，建议在客服排班与培训资源上向高转化渠道（如IDN·抖音、IDN·天猫）适度倾斜话术与转化技巧培训；同时关注理想燃料·抖音店铺周期4数据骤降，及时与运营团队对齐店铺侧动态，避免误判为客服服务问题。</p>
+  </div>
+  <div class="card">
+    <h3>补充：新人成长跟踪</h3>
+    <p style="font-size:14px;">花花作为5月新人已展现稳定增长（周期3接待量501、销售¥30,969，超过部分老员工同期水平），建议下阶段将其纳入常规排名对比，给予正式绩效反馈，加速融入团队梯队。</p>
+  </div>
+</div>`;
+
 </script>
 </body>
 </html>
